@@ -7,7 +7,7 @@ import { setTemplate } from "../../features/resume/resumeSlice";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setResume } from "../../features/user/userSlice";
-const env = await import.meta.env;
+const env = import.meta.env;
 
 const Templates = () => {
   const resume = useSelector((state) => state.resume);

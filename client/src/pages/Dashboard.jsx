@@ -4,7 +4,7 @@ import isLoggedIn from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { addResume } from "../features/resume/resumeSlice";
-const env = await import.meta.env;
+const env = import.meta.env;
 
 const Dashboard = () => {
   const navigate = useNavigate();

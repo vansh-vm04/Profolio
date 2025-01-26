@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Template 3</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      margin: 0;
+      padding: 0;
+      color: #222;
+      background: #f0f4f8;
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 40px;
+      background: #fff;
+      border-left: 10px solid #4caf50;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    .header {
+      text-align: left;
+      border-bottom: 3px solid #4caf50;
+      margin-bottom: 25px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #4caf50;
+    }
+    .header p {
+      margin: 5px 0;
+      color: #555;
+      font-size: 1em;
+    }
+    .section {
+      margin-top: 25px;
+    }
+    .section-title {
+      font-size: 1.7em;
+      font-weight: bold;
+      color: #4caf50;
+      margin-bottom: 10px;
+    }
+    .section-content ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .section-content ul li {
+      padding: 5px 0;
+    }
+    .item {
+      margin-bottom: 15px;
+    }
+    .item-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #222;
+    }
+    .item-subtitle {
+      font-size: 1em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><%= heading.firstname %> <%= heading.surname %></h1>
+      <p>
+        <a href="mailto:<%= heading.email %>"><%= heading.email %></a> |
+        <a href="tel:<%= heading.phone %>"><%= heading.phone %></a> |
+        <a href="<%= heading.linkedin %>" target="_blank">LinkedIn</a>
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Skills</div>
+      <div class="section-content">
+        <ul>
+          <% (skills || []).forEach(skill => { %>
+            <li><%= skill %></li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Education</div>
+      <% (education || []).forEach(edu => { %>
+        <div class="item">
+          <div class="item-title"><%= edu.cname %>, <%= edu.clocation %></div>
+          <div class="item-subtitle"><%= edu.degree %> in <%= edu.branch %> - <%= edu.month %> <%= edu.year %></div>
+        </div>
+      <% }); %>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Experience</div>
+      <% (experience || []).forEach(exp => { %>
+        <div class="item">
+          <div class="item-title"><%= exp.jobTitle %> at <%= exp.cname %>, <%= exp.clocation %></div>
+          <div class="item-subtitle">
+            <%= exp.smonth %> <%= exp.syear %> - <%= exp.Working ? 'Present' : exp.emonth + ' ' + exp.eyear %>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Projects</div>
+      <% (projects || []).forEach(project => { %>
+        <div class="item">
+          <div class="item-title"><%= project.Title %></div>
+          <p><%= project.Details %></p>
+          <% if (project.Link) { %>
+            <p><a href="<%= project.Link %>" target="_blank">View Project</a></p>
+          <% } %>
+        </div>
+      <% }); %>
+    </div>
+    <% Object.entries(additionalSections || {}).forEach(([sectionTitle, items]) => { %>
+        <div class="section">
+          <div class="section-title"><%= sectionTitle %></div>
+          <ul>
+            <% (Array.isArray(items) ? items : [items]).forEach(item => { %>
+              <li><%= item %></li>
+            <% }); %>
+          </ul>
+        </div>
+      <% }); %>
+  </div>
+</body>
+</html>

@@ -21,7 +21,13 @@ const registerUser = async(req,res)=>{
             const response = await newUser.save();
             if(response){
                 const token = await generateToken(response.id);
-                return res.status(200).json({token:token});
+                const user = await User.findOne({email:email});
+                return res.status(200).json({
+                    id:user.id,
+                    username:user.username,
+                    email:user.email,
+                    token:token
+                });
             }
             else{
                 return res.status(500).json({error:"Internal error"});

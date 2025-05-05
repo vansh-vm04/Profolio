@@ -11,7 +11,7 @@ const Navbar = () => {
   useEffect(() => {
     const verifyLogin = async () => {
       const { loggedIn } = await isLoggedIn();
-      console.log(loggedIn);
+      //console.log(loggedIn);
       setloggedIn(loggedIn);
     };
     verifyLogin();

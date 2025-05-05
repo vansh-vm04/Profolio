@@ -1,10 +1,13 @@
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
-import { toast,ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 const env = import.meta.env;
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../features/user/userSlice";
 
 const Signup = () => {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -24,11 +27,20 @@ const Signup = () => {
         body: JSON.stringify(data),
       });
       if (response.status == 409) {
-        setInfo("An account already exist with this email, try login");
+        setInfo("An account already exist with this email or username, try login");
       }
       if (response.ok) {
         const userData = await response.json();
         const token = userData.token;
+        dispatch(
+                setUser({
+                  id: userData.id,
+                  username: userData.username,
+                  email: userData.email,
+                  token: userData.token,
+                  loggedIn: true, // Set the logged-in status to true
+                })
+              );
         // console.log(token)
         localStorage.setItem("token",token);
         navigate('/')
@@ -117,9 +129,7 @@ const Signup = () => {
           </a>
         </p>
       </div>
-      <ToastContainer/>
     </div>
   );
 };
-
 export default Signup;

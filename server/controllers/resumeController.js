@@ -27,7 +27,6 @@ const parseResumeData = (data) => {
 
 const downloadResume = async (req, res) => {
   const resume = await parseResumeData(req.body);
-  console.log("resume");
   try {
     const hash = generateHash(resume);
     console.log(hash);
@@ -40,7 +39,7 @@ const downloadResume = async (req, res) => {
     }
 
     if (resume) {
-      const userID = req.headers["userid"] || req.headers["UserID"];
+      const userID = await req.headers["userid"];
       console.log("userid: "+userID)
       const updatedUser = await User.findByIdAndUpdate(
         userID,

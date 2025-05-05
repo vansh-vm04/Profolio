@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setSkills, clearSkills } from "../../features/resume/resumeSlice";
 import { useNavigate } from "react-router-dom";
@@ -93,7 +93,6 @@ const Skills = () => {
         </div>
         
       </div>
-      <ToastContainer />
       <button
       onClick={() => navigate("/finalise")}
        className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none hover:cursor-pointer focus:ring-pink-200 dark:focus:ring-pink-800 rounded-lg px-8 py-2">

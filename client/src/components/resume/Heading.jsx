@@ -4,11 +4,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { setHeading } from "../../features/resume/resumeSlice";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Heading = () => {
   const dispatch = useDispatch();
   const details = useSelector((state) => state.resume.heading);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     register,
@@ -24,12 +27,17 @@ const Heading = () => {
 
   useEffect(() => {
     // console.log("Updated Details:", details);
+    if(location.state?.toastMessage){
+      toast.info(location.state.toastMessage);
+      //clear toast message
+      location.state.toastMessage = null;
+    }
     if (details) {
       Object.keys(details).map((item) => {
         setValue(item, details[item]);
       });
     }
-  }, [details, setValue]);
+  }, [details,setValue,location]);
 
   return (
     <div className=" h-full w-full flex md:ml-[216px] items-center justify-center">

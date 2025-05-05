@@ -1,14 +1,20 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 const env = import.meta.env;
 import { setUser } from "../features/user/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isLoggedIn from "../utils/authUtils";
+import { setResume } from "../features/user/userSlice";
+import { download } from "../utils/downloadUtils";
+import {  useSelector } from "react-redux";
 
 const Login = () => {
+  const [shouldDownload, setShouldDownload] = useState(sessionStorage.getItem("resume-download-pending"));
+  const resume = useSelector((state) => state.resume);
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
@@ -49,8 +55,14 @@ const Login = () => {
       // console.log(userData);
       
       if(token){
-        const user = isLoggedIn();
-        if((await user).loggedIn) navigate('/');
+        const auth = await isLoggedIn();
+        if(auth.loggedIn){
+          if(shouldDownload){
+            download(user,resume,toast,navigate,dispatch,setResume);
+          }else{
+            navigate('/')
+          }
+        }
       }
     }
     
@@ -114,7 +126,6 @@ const Login = () => {
           </a>
         </p>
       </div>
-      <ToastContainer />
     </div>
   );
 };

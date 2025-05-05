@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { templates } from "../../constants/data";
 import Template from "../other/Template";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setTemplate } from "../../features/resume/resumeSlice";
 import { useState } from "react";
@@ -48,10 +48,7 @@ const Templates = () => {
 
   const download = async () => {
     try {
-      if (user) {
-        var userID = user.id;
-        // console.log("userId: " + userID);
-      }
+      const userID = user.id;
       const token = localStorage.getItem("token");
       const response = await fetch(`${env.VITE_SERVER_URL}/resume/download`, {
         method: "POST",
@@ -63,8 +60,12 @@ const Templates = () => {
         body: JSON.stringify(resume),
       });
       if (response.status == 404 || response.status == 401) {
+        sessionStorage.setItem("resume-download-pending",true);
         toast.info(`Please login to download resume`);
         navigate("/login");
+      }
+      if(response.status == 500){
+        navigate('/heading',{state:{toastMessage:"Download failed: Please fill all resume details"}});
       }
       if (response.ok) {
         const blob = await response.blob();
@@ -136,7 +137,6 @@ const Templates = () => {
       >
         Download Resume
       </button>
-      <ToastContainer />
     </div>
   );
 };

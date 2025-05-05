@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import isLoggedIn from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import { addResume } from "../features/resume/resumeSlice";
+import { toast } from "react-toastify";
+import { addResume,resetResume } from "../features/resume/resumeSlice";
+import { setUser } from "../features/user/userSlice";
 const env = import.meta.env;
 
 const Dashboard = () => {
@@ -23,6 +24,10 @@ const Dashboard = () => {
     const isConfirmed = window.confirm("Are you sure you want to logout?");
     if (isConfirmed) {
       localStorage.removeItem("token");
+      setUser(null);
+      resetResume();
+      localStorage.removeItem("persist:user");
+      localStorage.removeItem("persist:resume");
       navigate("/");
     }
   };
@@ -85,7 +90,7 @@ const Dashboard = () => {
               <li
                 key={index}
                 onClick={() => openResume(hash)}
-                className="p-3 bg-blue-100 rounded-md text-blue-700 font-medium hover:bg-blue-200 transition"
+                className="p-3 hover:cursor-pointer bg-blue-100 rounded-md text-blue-700 font-medium hover:bg-blue-200 transition"
               >
                 Resume-{index + 1}
               </li>
@@ -115,7 +120,6 @@ const Dashboard = () => {
         </svg>
         Logout
       </span>
-      <ToastContainer />
     </div>
   );
 };

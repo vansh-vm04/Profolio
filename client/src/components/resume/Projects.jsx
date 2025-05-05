@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setProjects, clearProjects } from "../../features/resume/resumeSlice";
@@ -136,7 +136,6 @@ const Projects = () => {
           )}
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

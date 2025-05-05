@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_DOMAIN,
     methods: ["POST"],
-    exposedHeaders: ["Resumes"], // Expose the custom header
+    exposedHeaders: ["Resumes"], 
   })
 );
 

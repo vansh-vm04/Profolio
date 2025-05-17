@@ -17,6 +17,7 @@ import Finalise from "./components/resume/Finalise";
 import Templates from "./components/resume/Templates";
 import Dashboard from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   const location = useLocation();
@@ -45,6 +46,7 @@ function App() {
         {!showSidebar && <Footer />}
       </div>
       <ToastContainer position="top-right" autoClose={2000} />
+      <Analytics/>
     </>
   );
 }

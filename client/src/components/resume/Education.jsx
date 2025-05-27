@@ -86,7 +86,7 @@ const Education = () => {
             <input
               className="input2"
               placeholder="e.g. New Delhi,India"
-              {...register("clocation", { required: true })}
+              {...register("clocation", { required: false })}
             />
             {errors.clocation && (
               <span className="text-red-500 text-xs">
@@ -126,9 +126,9 @@ const Education = () => {
           </div>
 
           <div className="w-full h-full">
-            <label>Graduation Month (Or expected)</label>
-            <select className="input2" {...register("month")}>
-              {months.map((item) => {
+            <label>Start Year</label>
+            <select className="input2" {...register("startyear")}>
+              {years.map((item) => {
                 return (
                   <option key={item} value={`${item}`}>
                     {item}
@@ -139,8 +139,8 @@ const Education = () => {
           </div>
 
           <div className="w-full h-full">
-            <label>Graduation Year (Or expected)</label>
-            <select className="input2" {...register("year")}>
+            <label>End Year</label>
+            <select className="input2" {...register("endyear")}>
               {years.map((item) => {
                 return (
                   <option key={item} value={`${item}`}>
@@ -167,11 +167,11 @@ const Education = () => {
         <button
         onClick={() => navigate("/experience")}
           className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none hover:cursor-pointer focus:ring-pink-200 dark:focus:ring-pink-800 rounded-lg px-8 py-2"
-        >Next: Experience</button>
+        >Save and Continue</button>
         </div>
 
         <div className="flex flex-col gap-2 py-2 md:px-20 max-md:p-2 w-full items-center justify-center">
-          {details.length > 0 && (
+          {details.length > 0 ? (
             details.map((edu, index) => (
               <div
                 key={index}
@@ -179,11 +179,13 @@ const Education = () => {
               >
                 <div className="justify-between flex">
                   <h1 className="text-xl font-bold">{edu.cname}</h1>
-                  <span>{edu.month+" "+edu.year}</span>
+                  <span>{edu.startyear+"-"+edu.endyear}</span>
                 </div>
                 <p className="text-gray-600">{edu.degree+' '+edu.branch}</p>
               </div>
             ))
+          ):(
+            <span>No education details added yet.. Click add education button</span>
           )}
         </div>
 

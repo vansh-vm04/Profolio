@@ -84,6 +84,20 @@ const Experience = () => {
           </div>
 
           <div className="w-full h-full">
+            <label>Work Link (optional)</label>
+            <input
+              className="input2"
+              placeholder="e.g. Project link (if available)"
+              {...register("worklink",{required:false})}
+            />
+            {errors.worklink && (
+              <span className="text-red-500 text-xs">
+                This field is required
+              </span>
+            )}
+          </div>
+
+          <div className="w-full h-full">
             <label>Company Location</label>
             <input
               className="input2"
@@ -171,22 +185,24 @@ const Experience = () => {
         <button
         onClick={() => navigate("/projects")}
           className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none hover:cursor-pointer focus:ring-pink-200 dark:focus:ring-pink-800 rounded-lg px-8 py-2"
-        >Next: Projects</button>
+        >Save and Continue</button>
         </div>
         <div className="flex flex-col gap-2 py-2 md:px-20 max-md:p-2 w-full items-center justify-center">
-          {exp.length > 0 && (
+          {exp.length > 0 ? (
             exp.map((exp, index) => (
               <div
                 key={index}
                 className="p-5 border rounded-md shadow-md w-full"
               >
                 <div className="justify-between flex">
-                  <h1 className="text-xl font-bold">{exp.jobTitle}, {exp.cname}</h1>
+                  <h1 className="text-xl font-bold"><a target="_blank" href={exp.worklink.startsWith('https://')?exp.worklink:('https://'+exp.worklink)}>{exp.jobTitle}, {exp.cname}</a></h1>
                   <span>{exp.smonth+" "+exp.syear} - {exp.Working ? (<span>Present</span>)
                   : <span>{exp.emonth+" "+exp.eyear}</span>}</span>
                 </div>
               </div>
             ))
+          ):(
+            <span>No work experience added yet.. Click on add experience button</span>
           )}
         </div>
       </form>

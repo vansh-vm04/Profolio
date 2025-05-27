@@ -74,15 +74,7 @@ const Projects = () => {
             />
           </div>
 
-          <div className="w-full h-full">
-            <label>Project Details</label>
-            <input
-              className="input2"
-              value={projectDetails}
-              onChange={(e) => setProjectDetails(e.target.value)}
-              placeholder="e.g. Developed an app..."
-            />
-          </div>
+          
 
           <div className="w-full">
             <label>Live Link</label>
@@ -91,6 +83,16 @@ const Projects = () => {
               value={projectLink}
               onChange={(e) => setProjectLink(e.target.value)}
               placeholder="e.g. https://github.io/xyz"
+            />
+          </div>
+
+          <div className="w-full h-full">
+            <label>Project Details</label>
+            <textarea
+              className="input2 min-h-36 max-h-64"
+              value={projectDetails}
+              onChange={(e) => setProjectDetails(e.target.value)}
+              placeholder="e.g. Developed an app..."
             />
           </div>
 

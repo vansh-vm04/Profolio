@@ -6,7 +6,6 @@ const initialState = {
   experience:[],
   projects:[],
   skills:[],
-  additionalSections:{},
   template:"template1"
 }
 
@@ -48,15 +47,7 @@ export const resumeSlice = createSlice({
       state.projects = []
     },
     setSkills: (state, action) => {
-      const newSkills = action.payload
-        .split(',')
-        .map(skill => skill.trim()) // Remove extra spaces around skills
-        .filter(skill => skill);    // Remove empty strings if any
-    
-      state.skills = [
-        ...state.skills,
-        ...newSkills
-      ];
+      state.skills = [...action.payload];
     },
     clearSkills: (state) => {
       state.skills = []

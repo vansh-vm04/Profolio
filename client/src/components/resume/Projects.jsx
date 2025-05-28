@@ -4,6 +4,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setProjects, clearProjects } from "../../features/resume/resumeSlice";
 import { useNavigate } from "react-router-dom";
+import { skillOptions } from "../../constants/data";
+import Select from 'react-select'
 
 const Projects = () => {
   const dispatch = useDispatch();
@@ -18,12 +20,20 @@ const Projects = () => {
     dispatch(clearProjects());
   }
 
-  const handleAddProject = () => {
+  const [skillInput, setSkillInput] = useState([]);
+
+  const handleAddSkill = (selectedSkill) => {
+    setSkillInput(selectedSkill);
+    console.log(skillInput)
+  };
+
+  const handleAddProject = async() => {
     if (projectTitle.trim() && projectDetails.trim()) {
       const newProject = {
         Title: projectTitle,
         Details: projectDetails,
         Link: projectLink,
+        Skills:skillInput.map(skill=>skill.label)
       };
 
       dispatch(setProjects({...newProject}));
@@ -31,6 +41,7 @@ const Projects = () => {
       setProjectTitle("");
       setProjectDetails("");
       setProjectLink("");
+      setSkillInput([]);
 
       toast.success("Project added successfully");
     } else {
@@ -96,6 +107,20 @@ const Projects = () => {
             />
           </div>
 
+          <div className="w-full h-full">
+            <label>Skills Used</label>
+          <Select
+            isMulti
+            name="skills"
+            options={skillOptions}
+            value={skillInput}
+            onChange={(e)=>handleAddSkill(e)}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            placeholder="Choose skills..."
+          />
+          </div>
+
           <div className="items-center justify-center flex gap-2 flex-wrap">
         <button
               type="button"
@@ -111,32 +136,47 @@ const Projects = () => {
         <button
         onClick={() => navigate("/skills")}
           className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none hover:cursor-pointer focus:ring-pink-200 dark:focus:ring-pink-800 rounded-lg px-8 py-2"
-        >Next: Skills</button>
+        >Save and Continue</button>
         </div>
         </div>
 
         <div className="flex flex-col gap-2 py-5 md:px-20 max-md:p-5 w-full items-center justify-center">
-          {projects.length > 0 ? (
-            projects.map((project, index) => (
-              <div
-                key={index}
-                className="p-5 border rounded-md shadow-md w-full"
-              >
-                <div className="flex justify-between">
-                  <h1 className="text-xl font-bold">{project.Title}</h1>
-                  {project.Link && (
-                    <a className="font-semibold" href={project.Link} target="_blank" rel="noopener noreferrer">
-                      Live
-                    </a>
-                  )}
-                </div>
-                <p className="text-gray-600">{project.Details}</p>
-              </div>
-            ))
-          ) : (
-            <span>No projects added yet</span>
+  {projects.length > 0 ? (
+    projects.map((project, index) => (
+      <div
+        key={index}
+        className="p-5 border rounded-md shadow-md w-full"
+      >
+        <div className="flex justify-between">
+          <h1 className="text-xl font-bold">{project.Title}</h1>
+          {project.Link && (
+            <a className="font-semibold text-blue-600 hover:underline" href={project.Link} target="_blank" rel="noopener noreferrer">
+              Live
+            </a>
           )}
         </div>
+        <p className="text-gray-600">{project.Details}</p>
+
+        {/* Skills section */}
+        {project.Skills && project.Skills.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {project.Skills.map((skill, skillIndex) => (
+              <span
+                key={skillIndex}
+                className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    ))
+  ) : (
+    <span>No projects added yet</span>
+  )}
+</div>
+
       </div>
     </div>
   );

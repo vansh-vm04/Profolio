@@ -64,17 +64,6 @@ const Sidebar = () => {
         </li>
 
         <li
-          onClick={() => navigate("/finalise")}
-          className={`text-wrap text-xl  hover:cursor-pointer ${
-            pathname.endsWith("finalise")
-              ? "text-white font-bold underline"
-              : "text-zinc-300 font-semibold"
-          }`}
-        >
-          Finalise
-        </li>
-
-        <li
           onClick={() => navigate("/templates")}
           className={`text-wrap text-xl  hover:cursor-pointer ${
             pathname.endsWith("templates")

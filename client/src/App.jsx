@@ -13,11 +13,11 @@ import Education from "./components/resume/Education";
 import Experience from "./components/resume/Experience";
 import Projects from "./components/resume/Projects";
 import Skills from "./components/resume/Skills";
-import Finalise from "./components/resume/Finalise";
 import Templates from "./components/resume/Templates";
 import Dashboard from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
 import { Analytics } from '@vercel/analytics/react';
+import PortfolioTemplate1 from "./components/templates/Portfolio-1";
 
 function App() {
   const location = useLocation();
@@ -38,9 +38,9 @@ function App() {
             <Route path="/experience" element={<Experience />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/skills" element={<Skills />} />
-            <Route path="/finalise" element={<Finalise />} />
             <Route path="/templates" element={<Templates />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/p1" element={<PortfolioTemplate1 />} />
           </Routes>
         </div>
         {!showSidebar && <Footer />}

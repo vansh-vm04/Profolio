@@ -12,12 +12,13 @@ export const userSlice = createSlice({
 },
   reducers: {
     setUser(state, action) {
-      const { id, username, email, token, loggedIn } = action.payload;
+      const { id, username, email, token, loggedIn, resumes } = action.payload;
       state.id = id;
       state.username = username;
       state.email = email;
       state.token = token;
       state.loggedIn = loggedIn;
+      state.resumes = resumes;
     },
     setResume(state,action){
       state.resumes = action.payload

@@ -12,7 +12,7 @@ const resumePersistConfig = {
 const userPersistConfig = {
   key: "user",
   storage,
-  whitelist: ["id","username","gmail","resumes"]
+  whitelist: ["id","username","email","resumes"]
 }
 const resumePersistedReducer = persistReducer(resumePersistConfig, resumeReducer);
 const userPersistedReducer = persistReducer(userPersistConfig, userReducer);

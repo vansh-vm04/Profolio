@@ -1,10 +1,13 @@
 import { useForm } from "react-hook-form";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { toast } from "react-toastify";
 const env = import.meta.env;
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../features/user/userSlice";
+import isLoggedIn from "../utils/authUtils";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -13,6 +16,49 @@ const Signup = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
+
+  const LoginWithGoogle = async (details) => {
+      const data = jwtDecode(details.credential);
+      // console.log(data);
+      const response = await fetch(`${env.VITE_SERVER_URL}/user/login/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const userData = await response.json();
+      if (userData) {
+        const token = userData.token;
+        localStorage.setItem("token", token);
+        dispatch(
+          setUser({
+            id: userData.id,
+            username: userData.username,
+            email: userData.email,
+            token: userData.token,
+            loggedIn: true, // Set the logged-in status to true
+            resumes: userData.resumes,
+          })
+        );
+  
+        if (localStorage.getItem("token")) {
+          const auth = await isLoggedIn();
+          if (auth.loggedIn) {
+            navigate("/");
+          }
+        }
+      }
+    };
+
+  const verifyLogin = async () => {
+      const { loggedIn } = await isLoggedIn();
+      if (loggedIn) {
+        navigate("/");
+      }
+    };
+  
+    useEffect(() => {
+      verifyLogin();
+    }, []);
 
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -122,6 +168,15 @@ const Signup = () => {
             <span className="text-red-600">*{errors.custom.message}</span>
           )}
         </form>
+        <GoogleLogin
+            onSuccess={(credentialResponse) =>
+              LoginWithGoogle(credentialResponse)
+            }
+            onError={() => {
+              console.log("Login Failed");
+            }}
+            useOneTap
+          />
         <p>
           Have an account?{" "}
           <a className="text-blue-500" href="/login">

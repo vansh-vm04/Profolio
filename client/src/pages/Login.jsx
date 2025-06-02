@@ -7,14 +7,10 @@ import { setUser } from "../features/user/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isLoggedIn from "../utils/authUtils";
-import { setResume } from "../features/user/userSlice";
-import { download } from "../utils/downloadUtils";
-import {  useSelector } from "react-redux";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
-  const [shouldDownload, setShouldDownload] = useState(sessionStorage.getItem("resume-download-pending"));
-  const resume = useSelector((state) => state.resume);
-  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
@@ -23,11 +19,51 @@ const Login = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const verifyLogin = async () => {
+    const { loggedIn } = await isLoggedIn();
+    if (loggedIn) {
+      navigate("/");
+    }
+  };
+
   useEffect(() => {
-    toast.info(`Please login`);
+    verifyLogin();
   }, []);
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const LoginWithGoogle = async (details) => {
+    const data = jwtDecode(details.credential);
+    // console.log(data);
+    const response = await fetch(`${env.VITE_SERVER_URL}/user/login/google`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const userData = await response.json();
+    if (userData) {
+      const token = userData.token;
+      localStorage.setItem("token", token);
+      dispatch(
+        setUser({
+          id: userData.id,
+          username: userData.username,
+          email: userData.email,
+          token: userData.token,
+          loggedIn: true, // Set the logged-in status to true
+          resumes: userData.resumes,
+        })
+      );
+      console.log(userData);
+
+      if (localStorage.getItem("token")) {
+        const auth = await isLoggedIn();
+        if (auth.loggedIn) {
+          navigate("/");
+        }
+      }
+    }
+  };
 
   const onSubmit = async (data) => {
     // console.log(data);
@@ -50,22 +86,18 @@ const Login = () => {
           email: userData.email,
           token: userData.token,
           loggedIn: true, // Set the logged-in status to true
+          resumes: userData.resumes,
         })
       );
       // console.log(userData);
-      
-      if(token){
+
+      if (token) {
         const auth = await isLoggedIn();
-        if(auth.loggedIn){
-          if(shouldDownload){
-            download(user,resume,toast,navigate,dispatch,setResume);
-          }else{
-            navigate('/')
-          }
+        if (auth.loggedIn) {
+          navigate("/");
         }
       }
     }
-    
   };
 
   return (
@@ -119,6 +151,15 @@ const Login = () => {
             <span className="text-red-600">*{errors.custom.message}</span>
           )}
         </form>
+        <GoogleLogin
+            onSuccess={(credentialResponse) =>
+              LoginWithGoogle(credentialResponse)
+            }
+            onError={() => {
+              console.log("Login Failed");
+            }}
+            useOneTap
+          />
         <p>
           Need an account?{" "}
           <a className="text-blue-500" href="/signup">

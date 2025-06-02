@@ -10,8 +10,9 @@ export const isLoggedIn =async()=>{
         },
       });
       if(response.ok){
-        const data = await response.json();
-        return {loggedIn:true, data:data.user};
+        const {user} = await response.json();
+        // console.log("isLoggedIn: " +user)
+        return {loggedIn:true, data:user};
       }
       else{
         return {loggedIn:false};

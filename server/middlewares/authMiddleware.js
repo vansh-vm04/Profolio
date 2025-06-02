@@ -4,16 +4,18 @@ const User = require('../models/User')
 const jwtAuthMiddleware = async(req,res,next)=>{
     const authorization = await req.headers.authorization;
     // console.log(authorization)
-
-    if(!authorization){
+    try {
+        if(!authorization){
         console.log("Token not found")
         return res.status(404).json({error:"token not found"});
     }
-    try {
-        const token = await authorization;
+    
+        const token = authorization;
         // console.log(token);
-        const payload = jwt.verify(token,process.env.JWT_SECRET);
-        req.user = await User.findById(payload.id);
+        const payload = await jwt.verify(token,process.env.JWT_SECRET);
+        const data = await User.findById(payload.id);
+        req.user = data;
+        // console.log(data)
         next();
     } catch (err) {
         console.log(err)

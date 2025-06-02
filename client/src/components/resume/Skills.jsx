@@ -14,7 +14,8 @@ const Skills = () => {
   const [skillInput, setSkillInput] = useState([]);
 
   useEffect(() => {
-    setSkillInput(skills)
+    const skillSet = skills.map(skill=>{return {label:skill,value:skill}});
+    setSkillInput(skillSet)
   }, [])
 
   const handleAddSkill = (selectedSkill) => {

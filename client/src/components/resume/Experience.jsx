@@ -195,7 +195,7 @@ const Experience = () => {
                 className="p-5 border rounded-md shadow-md w-full"
               >
                 <div className="justify-between flex">
-                  <h1 className="text-xl font-bold"><a target="_blank" href={exp.worklink.startsWith('https://')?exp.worklink:('https://'+exp.worklink)}>{exp.jobTitle}, {exp.cname}</a></h1>
+                  <h1 className="text-xl font-bold"><a target="_blank" href={exp.worklink}>{exp.jobTitle}, {exp.cname}</a></h1>
                   <span>{exp.smonth+" "+exp.syear} - {exp.Working ? (<span>Present</span>)
                   : <span>{exp.emonth+" "+exp.eyear}</span>}</span>
                 </div>

@@ -17,16 +17,20 @@ import Templates from "./components/resume/Templates";
 import Dashboard from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
 import { Analytics } from '@vercel/analytics/react';
-import PortfolioTemplate1 from "./components/templates/Portfolio-1";
+import DeployPage from "./components/resume/Deploy";
+import Preview from "./components/resume/Preview";
+import RenderPortfolio from "./pages/RenderPortfolio";
 
 function App() {
   const location = useLocation();
-  const noSidebarRoutes = ["/", "/login", "/signup","/dashboard"];
-  const showSidebar = !noSidebarRoutes.includes(location.pathname);
+  const pageRoutes = ["/","/login","/signup","/dashboard"]
+  const SidebarRoutes = ["/heading", "/templates", "/deploy","/education","/experience","/skills","/projects","/preview"];
+  const showSidebar = SidebarRoutes.includes(location.pathname);
+  const showNavbar = pageRoutes.includes(location.pathname);
   return (
     <>
       <div className="">
-        {!showSidebar && <Navbar />}
+        {showNavbar && <Navbar />}
         <div className="flex">
           {showSidebar && <Sidebar />}
           <Routes>
@@ -39,11 +43,13 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             <Route path="/skills" element={<Skills />} />
             <Route path="/templates" element={<Templates />} />
+            <Route path="/deploy" element={<DeployPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/p1" element={<PortfolioTemplate1 />} />
+            <Route path="/preview" element={<Preview />} />
+            <Route path="/:hash" element={<RenderPortfolio />} />
           </Routes>
         </div>
-        {!showSidebar && <Footer />}
+        {showNavbar && <Footer />}
       </div>
       <ToastContainer position="top-right" autoClose={2000} />
       <Analytics/>

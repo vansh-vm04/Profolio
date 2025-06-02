@@ -6,7 +6,7 @@ const initialState = {
   experience:[],
   projects:[],
   skills:[],
-  template:"template1"
+  template:"p1"
 }
 
 export const resumeSlice = createSlice({

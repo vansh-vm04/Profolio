@@ -1,144 +1,67 @@
-import React, { useEffect } from "react";
-import { templates } from "../../constants/data";
-import Template from "../other/Template";
-import { toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
-import { setTemplate } from "../../features/resume/resumeSlice";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { setResume } from "../../features/user/userSlice";
-const env = import.meta.env;
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTemplate } from '../../features/resume/resumeSlice';
+import { CheckCircle } from 'lucide-react'; 
 
-const Templates = () => {
-  const resume = useSelector((state) => state.resume);
-  const user = useSelector((state) => state.user);
+const templates = [
+  { id: 'p1', name: 'Colorful Portfolio', img: '/templates/colorful.png' },
+  { id: 'p2', name: 'Minimal Portfolio', img: '/templates/minimal.png' },
+  { id: 'p3', name: 'Dark Elegance', img: '/templates/dark.png' },
+  { id: 'p4', name: 'Modern Grid', img: '/templates/grid.png' },
+  { id: 'p5', name: 'Classic Resume', img: '/templates/classic.png' },
+  { id: 'p6', name: 'Creative Flow', img: '/templates/creative.png' },
+];
+
+export default function SelectTemplate() {
   const dispatch = useDispatch();
-  const [resumeHtml, setResumeHtml] = useState();
-  const navigate = useNavigate();
+  const selectedTemplate = useSelector((state) => state.resume.template);
 
-  useEffect(() => {
-    handleSelect(resume.template);
-  }, [resume]);
-
-  const handleSelect = async (id) => {
+  const handleSelect = (id) => {
     dispatch(setTemplate(id));
-    // console.log(JSON.stringify(resume));
-    try {
-      var response = await fetch(`${env.VITE_SERVER_URL}/resume/view`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(resume),
-      });
-      // console.log(response);
-
-      if (response.ok) {
-        const html = await response.text();
-        const blob = new Blob([html], { type: "text/html" });
-        const iframeSrc = URL.createObjectURL(blob);
-        setResumeHtml(iframeSrc);
-      }else{
-        toast.error("Some error occured, Try Again");
-      }
-    } catch (error) {
-      console.log(error);
-      setResumeHtml(<h2>Error</h2>);
-      toast.error("Some error occured, Try Again");
-    }
-  };
-
-  const download = async () => {
-    try {
-      const userID = user.id;
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${env.VITE_SERVER_URL}/resume/download`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          UserID: userID,
-          authorization: token,
-        },
-        body: JSON.stringify(resume),
-      });
-      if (response.status == 404 || response.status == 401) {
-        sessionStorage.setItem("resume-download-pending",true);
-        toast.info(`Please login to download resume`);
-        navigate("/login");
-      }
-      if(response.status == 500){
-        navigate('/heading',{state:{toastMessage:"Download failed: Please fill all resume details"}});
-      }
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "resume.pdf";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        const resumes = await JSON.parse(response.headers.get("Resumes"));
-        dispatch(setResume(resumes));
-        navigate('/')
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Some error occured, Try Again");
-    }
   };
 
   return (
-    <div className=" w-full flex gap-6 flex-col md:ml-[216px] items-center justify-center md:p-10 pt-10">
-      <span
-        className="absolute left-2 top-2 text-blue-700 underline flex items-center text-sm md:hidden hover:text-blue-500 transition duration-200"
-        onClick={() => navigate("/finalise")}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-4 h-4"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Back
-      </span>
-      <h1 className="text-3xl max-md:text-2xl mb-6 font-bold">
-        Select a template
-      </h1>
-      <div className="p-2 grid gap-4 grid-cols-2 max-md:grid-cols-1 w-full">
-        <div className="grid gap-4 grid-cols-3">
-          {templates.map((item) => {
-            return (
-              <Template
-                onclick={() => handleSelect(item.id)}
-                key={item.id}
-                imageSrc={item.image}
+    <div className={`md:ml-[216px] p-10 w-full`}>
+      <h1 className="text-2xl font-bold mb-6">Choose a Template</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {templates.map((tpl) => {
+          const isSelected = tpl.id === selectedTemplate;
+
+          return (
+            <div
+              key={tpl.id}
+              className={`relative border p-4 rounded shadow hover:shadow-lg transition duration-300 ${
+                isSelected ? 'border-blue-600 ring-2 ring-blue-400' : ''
+              }`}
+            >
+              {/* Tick Overlay */}
+              {isSelected && (
+                <div className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md">
+                  <CheckCircle className="text-green-600 w-5 h-5" />
+                </div>
+              )}
+
+              <img
+                src={tpl.img}
+                alt={tpl.name}
+                className="w-full h-40 object-cover rounded mb-4"
               />
-            );
-          })}
-        </div>
-        <div className="flex flex-col gap-4 items-center">
-          {resumeHtml && (
-            <h1 className="text-2xl font-bold mb-4">Resume Preview</h1>
-          )}
-          <iframe src={resumeHtml} className="w-full h-96" />
-        </div>
+              <h2 className="font-semibold text-lg text-center">{tpl.name}</h2>
+              <button
+                onClick={() => handleSelect(tpl.id)}
+                className={`mt-4 w-full px-4 py-2 rounded text-white transition ${
+                  isSelected
+                    ? 'bg-green-600 cursor-default'
+                    : 'bg-blue-600 hover:bg-blue-500'
+                }`}
+                disabled={isSelected}
+              >
+                {isSelected ? 'Selected' : 'Select'}
+              </button>
+            </div>
+          );
+        })}
       </div>
-      <button
-        onClick={() => download()}
-        className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none hover:cursor-pointer focus:ring-pink-200 dark:focus:ring-pink-800 rounded-lg px-8 py-2"
-      >
-        Download Resume
-      </button>
     </div>
   );
-};
-
-export default Templates;
+}

@@ -73,6 +73,27 @@ const Sidebar = () => {
         >
           Template
         </li>
+
+        <li
+          onClick={()=>navigate('/preview')}
+          className={`text-wrap text-xl  hover:cursor-pointer ${
+            pathname.endsWith("preview")
+              ? "text-white font-bold underline"
+              : "text-zinc-300 font-semibold"
+          }`}
+        >
+          Preview
+        </li>
+        <li
+          onClick={() => navigate(`/deploy`)}
+          className={`text-wrap text-xl  hover:cursor-pointer ${
+            pathname.endsWith("deploy")
+              ? "text-white font-bold underline"
+              : "text-zinc-300 font-semibold"
+          }`}
+        >
+          Download & Deploy
+        </li>
       </ul>
     </div>
   );

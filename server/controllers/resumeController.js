@@ -1,12 +1,7 @@
 const Resume = require("../models/Resume");
-const User = require('../models/User')
-const ejs = require("ejs");
-const path = require("path");
-const puppeteer = require("puppeteer"); 
-const { generateHash } = require("../utils/resumeHash");
+const User = require("../models/User");
 
 const parseResumeData = (data) => {
-
   const education = Object.values(data.education || {});
 
   const experience = Object.values(data.experience || {});
@@ -15,9 +10,8 @@ const parseResumeData = (data) => {
 
   const skills = Object.values(data.skills || {});
 
- 
   return {
-    ...data, 
+    ...data,
     education,
     experience,
     projects,
@@ -25,109 +19,58 @@ const parseResumeData = (data) => {
   };
 };
 
-const downloadResume = async (req, res) => {
-  const resume = await parseResumeData(req.body);
+const savePortfolio = async (req, res) => {
   try {
-    const hash = generateHash(resume);
-    console.log(hash);
-    const resumeExist = await Resume.findOne({ hash });
-    console.log(resumeExist != null);
-    if (resumeExist == null) {
-      const newResume = new Resume({ ...resume, hash });
-      await newResume.save();
-      console.log("Resume saved");
+    const {resumeData} = req.body;
+    const data = await parseResumeData(resumeData);
+    const username = await req.params.username;
+    const resume = await Resume.findOne({ hash: data.hash });
+    if (resume)
+      return res.status(403).json({ message: "URL Key already exists" });
+    const newResume = await Resume.create(data);
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-
-    if (resume) {
-      const userID = await req.headers["userid"];
-      console.log("userid: "+userID)
-      const updatedUser = await User.findByIdAndUpdate(
-        userID,
-        { $addToSet: { resumes: hash } }, 
-        { new: true } 
-      );
-
-      const html = await ejs.renderFile(
-        path.join(__dirname, `../views/${resume.template}.ejs`), 
-        resume
-      );
-      
-      // fs.writeFileSync("rendered_resume.html", html);
-
-      
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      });
-      const page = await browser.newPage();
-      await page.setContent(html, { waitUntil: "networkidle0" });
-      const pdfBuffer = await page.pdf({ format: "letter" });
-      console.log("PDF Buffer Size:", pdfBuffer.length);
-      await browser.close();
-
-  
-      // fs.writeFileSync("test_resume.pdf", pdfBuffer);
-
-     
-      // res.setHeader("Content-Type", "application/pdf");
-      // res.setHeader("Content-Disposition", 'attachment; filename="resume.pdf"');
-      console.log(updatedUser)
-      const resumes = JSON.stringify(updatedUser.resumes);
-      console.log(resumes)
-      res.writeHead(200, {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": 'attachment; filename="resume.pdf"',
-        "Resumes": resumes
-      });
-      res.end(pdfBuffer);
-    }
+    user.resumes = [...user.resumes, newResume.hash];
+    await user.save();
+    await newResume.save();
+    console.log("Saved Portfolio")
+    res.status(200).json({ message: "Portfolio Saved and Deployed" });
   } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
     console.log(error);
-    return res.status(500).json({ Error: "Internal server error" });
   }
 };
 
-const viewResume = async (req, res) => {
-  const resume = await parseResumeData(req.body);
-  console.log("resume");
+const openPortfolio = async (req, res) => {
   try {
-    const hash = generateHash(resume);
-    console.log(hash);
-    const resumeExist = await Resume.findOne({ hash:hash });
-    console.log(resumeExist != null);
-    if (resumeExist == null) {
-      const newResume = new Resume({ ...resume, hash });
-      await newResume.save();
-      console.log("Resume saved");
-    }
-
-    if (resume) {
-      const html = await ejs.renderFile(
-        path.join(__dirname, `../views/${resume.template}.ejs`), // Adjust path if necessary
-        resume
-      );
-      res.send(html);
-    }
+    const hash = await req.params.hash;
+    const portfolio = await Resume.findOne({ hash: hash });
+    if (!portfolio) res.status(400).json({ message: "Portfolio Not found" });
+    res.status(200).json(portfolio);
   } catch (error) {
-    console.log(error);
-    res.status(500).json("Internal server error");
+    res.status(500).json({ message: "Internal Server Error" });
+    console.log("Error in openPortfolio: " + error);
   }
 };
 
-const openResume = async (req,res) =>{
-  const {hash} = req.body;
-  console.log(hash)
+const deletePortfolio = async(req,res)=>{
   try {
-    const resume = await Resume.findOne({ hash:hash });
-    if(resume){
-      res.status(200).json(resume)
-    }else{
-      res.status(500).json({Error:'Internal server error'});
-    }
+    const data = await req.params;
+    await Resume.deleteOne({hash:data.hash});
+    const user = await User.findOne({username:data.username});
+    user.resumes = await user.resumes.filter(resume=>{
+      if(resume!=data.hash){
+        return resume;
+      }
+    });
+    await user.save();
+    res.status(200).json({message:"Portfolio Deleted!"})
   } catch (error) {
-    console.log(error);
-    res.status(500).json({Error:'Internal server error'});
+    res.status(500).json({message:"Internal Server Error"})
+    console.log(error)
   }
 }
 
-module.exports = { downloadResume, viewResume, openResume };
+module.exports = { savePortfolio, openPortfolio,deletePortfolio };

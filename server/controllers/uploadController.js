@@ -1,6 +1,5 @@
-const { v2 } = require("cloudinary");
-const cloudinary = v2;
-const fs = require("fs");
+const { v2:cloudinary } = require("cloudinary");
+const streamifier = require("streamifier");
 
 const uploadImage = async (req, res) => {
     if(!req.file) return res.status(404).json({message:"file not found"});
@@ -10,21 +9,20 @@ const uploadImage = async (req, res) => {
     api_key: process.env.CLOUDINARY_KEY,
     api_secret: process.env.CLOUDINARY_SECRET,
   });
-    // Upload an image
-    const uploadResult = await cloudinary.uploader.upload(`${req.file.path}`, {
-      public_id: `${req.file.filename}`,
+    const uploadResult = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          public_id: "profolio-" + Date.now() + req.file.originalname,
+          folder: "portfolio_images",
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
+      streamifier.createReadStream(req.file.buffer).pipe(stream);
     });
-    if (!uploadResult) return res.status(400).json({ message: "Upload failed" });
-    // Optimize quality
-    const optimizeUrl = cloudinary.url(`${uploadResult.secure_url}`, {
-      fetch_format: "auto",
-      quality: "auto",
-    });
-    fs.unlink(`${req.file.path}`, function (err) {
-      if (err) throw err;
-      console.log("File deleted!");
-    });
-    res.status(200).json({ message: "Upload success", url: optimizeUrl });
+    res.status(200).json({ message: "Upload success", url: uploadResult.secure_url });
   } catch (error) {
     res.status(500).json({ message: "Error in uploading" });
     console.log("Error in upload:"+error);

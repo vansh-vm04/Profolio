@@ -10,6 +10,7 @@ A web application to create, customize, and host portfolios with custom URLs and
 - 🎨 Different Themes
 - 📄 Portfolio to pdf download
 - 🌐 Live hosting with custom username URLs
+- 📜 Dashboard to view and edit deployed portfolios.
 - 🔐 User authentication with JWT
 - 🛅 Fast and secure login with google
 - 📦 Data persistence with MongoDB

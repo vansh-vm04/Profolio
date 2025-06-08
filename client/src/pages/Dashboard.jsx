@@ -151,7 +151,7 @@ const Dashboard = () => {
 
   return (
     <div className="w-full min-h-screen bg-gray-100 p-6 flex flex-col items-center">
-      <div className="mb-4 pt-20 w-full fixed z-50 left-4">
+      <div className="mb-4 pt-20 w-full fixed z-40 left-4">
         <button
           onClick={() => navigate("/")}
           className="p-2 rounded-full bg-white shadow hover:bg-blue-100 transition-colors"

@@ -202,7 +202,7 @@ const Home = () => {
           <p className="text-gray-700 text-lg max-md:text-sm md:text-xl max-w-2xl mx-auto leading-relaxed">
             Host your portfolio at{" "}
             <code className="bg-indigo-100 text-nowrap px-3 py-1.5 rounded-md font-mono text-indigo-700 shadow-sm">
-              {env.VITE_BASE_URL}/yourname
+              {env.VITE_BASE_URL.split("//")[1]}/yourname
             </code>{" "}
             and share it instantly. Let the world see your work beautifully.
           </p>

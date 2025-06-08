@@ -5,6 +5,9 @@ import P3 from "../components/templates/Portfolio-3";
 import P4 from "../components/templates/Portfolio-4";
 import P5 from "../components/templates/Portfolio-5";
 import P6 from "../components/templates/Portfolio-6";
+import P7 from "../components/templates/Portfolio-7";
+import P8 from "../components/templates/Portfolio-8";
+import P9 from "../components/templates/Portfolio-9";
 import { useParams } from "react-router-dom";
 const env = import.meta.env;
 
@@ -27,6 +30,9 @@ const RenderPortfolio = () => {
     p4: P4,
     p5: P5,
     p6: P6,
+    p7: P7,
+    p8: P8,
+    p9: P9,
   };
   
 

@@ -6,14 +6,14 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   return (
-    <div className=" w-[216px] left-0 fixed h-full primaryBg py-14 max-md:hidden">
-      <ul className="flex flex-col gap-4 items-center">
+    <div className="w-[216px] left-0 fixed h-full bg-[#111827] py-14 max-md:hidden shadow-lg">
+      <ul className="flex flex-col gap-6 items-start px-6">
         <li
           onClick={() => navigate("/heading")}
-          className={`text-wrap text-xl  hover:cursor-pointer ${
+          className={`w-full px-3 py-2 rounded-lg text-lg hover:cursor-pointer transition ${
             pathname.endsWith("heading")
-              ? "text-white font-bold underline"
-              : "text-zinc-300 font-semibold"
+              ? "bg-gray-800 text-white font-bold"
+              : "text-gray-300 hover:bg-gray-700"
           }`}
         >
           Heading
@@ -21,10 +21,10 @@ const Sidebar = () => {
 
         <li
           onClick={() => navigate("/education")}
-          className={`text-wrap text-xl  hover:cursor-pointer ${
+          className={`w-full px-3 py-2 rounded-lg text-lg hover:cursor-pointer transition ${
             pathname.endsWith("education")
-              ? "text-white font-bold underline"
-              : "text-zinc-300 font-semibold"
+              ? "bg-gray-800 text-white font-bold"
+              : "text-gray-300 hover:bg-gray-700"
           }`}
         >
           Education
@@ -32,10 +32,10 @@ const Sidebar = () => {
 
         <li
           onClick={() => navigate("/experience")}
-          className={`text-wrap text-xl  hover:cursor-pointer ${
+          className={`w-full px-3 py-2 rounded-lg text-lg hover:cursor-pointer transition ${
             pathname.endsWith("experience")
-              ? "text-white font-bold underline"
-              : "text-zinc-300 font-semibold"
+              ? "bg-gray-800 text-white font-bold"
+              : "text-gray-300 hover:bg-gray-700"
           }`}
         >
           Experience
@@ -43,10 +43,10 @@ const Sidebar = () => {
 
         <li
           onClick={() => navigate("/projects")}
-          className={`text-wrap text-xl  hover:cursor-pointer ${
+          className={`w-full px-3 py-2 rounded-lg text-lg hover:cursor-pointer transition ${
             pathname.endsWith("projects")
-              ? "text-white font-bold underline"
-              : "text-zinc-300 font-semibold"
+              ? "bg-gray-800 text-white font-bold"
+              : "text-gray-300 hover:bg-gray-700"
           }`}
         >
           Projects
@@ -54,10 +54,10 @@ const Sidebar = () => {
 
         <li
           onClick={() => navigate("/skills")}
-          className={`text-wrap text-xl  hover:cursor-pointer ${
+          className={`w-full px-3 py-2 rounded-lg text-lg hover:cursor-pointer transition ${
             pathname.endsWith("skills")
-              ? "text-white font-bold underline"
-              : "text-zinc-300 font-semibold"
+              ? "bg-gray-800 text-white font-bold"
+              : "text-gray-300 hover:bg-gray-700"
           }`}
         >
           Skills
@@ -65,34 +65,35 @@ const Sidebar = () => {
 
         <li
           onClick={() => navigate("/templates")}
-          className={`text-wrap text-xl  hover:cursor-pointer ${
+          className={`w-full px-3 py-2 rounded-lg text-lg hover:cursor-pointer transition ${
             pathname.endsWith("templates")
-              ? "text-white font-bold underline"
-              : "text-zinc-300 font-semibold"
+              ? "bg-gray-800 text-white font-bold"
+              : "text-gray-300 hover:bg-gray-700"
           }`}
         >
           Template
         </li>
 
         <li
-          onClick={()=>navigate('/preview')}
-          className={`text-wrap text-xl  hover:cursor-pointer ${
+          onClick={() => navigate("/preview")}
+          className={`w-full px-3 py-2 rounded-lg text-lg hover:cursor-pointer transition ${
             pathname.endsWith("preview")
-              ? "text-white font-bold underline"
-              : "text-zinc-300 font-semibold"
+              ? "bg-gray-800 text-white font-bold"
+              : "text-gray-300 hover:bg-gray-700"
           }`}
         >
           Preview
         </li>
+
         <li
-          onClick={() => navigate(`/deploy`)}
-          className={`text-wrap text-xl  hover:cursor-pointer ${
+          onClick={() => navigate("/deploy")}
+          className={`w-full px-3 py-2 rounded-lg text-lg hover:cursor-pointer transition ${
             pathname.endsWith("deploy")
-              ? "text-white font-bold underline"
-              : "text-zinc-300 font-semibold"
+              ? "bg-gray-800 text-white font-bold"
+              : "text-gray-300 hover:bg-gray-700"
           }`}
         >
-          Download & Deploy
+          Deploy
         </li>
       </ul>
     </div>

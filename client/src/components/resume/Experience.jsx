@@ -1,211 +1,239 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { months, years } from "../../constants/data";
-import { useSelector, useDispatch } from 'react-redux';
-import {clearExperience, setExperience} from '../../features/resume/resumeSlice'
+import { useSelector, useDispatch } from "react-redux";
+import {
+  clearExperience,
+  setExperience,
+  removeExperience,
+} from "../../features/resume/resumeSlice";
 import { useNavigate } from "react-router-dom";
+import { Trash2, Edit } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const Experience = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm();
-  
+
   const dispatch = useDispatch();
-  const exp = useSelector((state)=>state.resume.experience);
-  const [currentlyWorking, setCurrentlyWorking] = useState(false);
+  const expList = useSelector((state) => state.resume.experience);
   const navigate = useNavigate();
 
+  const [currentlyWorking, setCurrentlyWorking] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+
+  // Auto-fill
+  useEffect(() => {
+    if (editIndex !== null) {
+      const data = expList[editIndex];
+      Object.keys(data).forEach((key) => {
+        if (key !== "Working") setValue(key, data[key]);
+      });
+      setCurrentlyWorking(data.Working || false);
+    }
+  }, [editIndex]);
+
   const onSubmit = (data) => {
-    dispatch(setExperience({...data,Working:currentlyWorking}));
+    const payload = { ...data, Working: currentlyWorking };
+    dispatch(setExperience(payload));
+    reset();
+    setCurrentlyWorking(false);
+    setEditIndex(null);
   };
 
-  const handleClear = ()=>{
-      dispatch(clearExperience());
-      }
+  const handleDelete = (index) => {
+    dispatch(removeExperience(index));
+  };
+
+  const handleEdit = (index) => {
+    setEditIndex(index);
+  };
+
+  const handleClear = () => {
+    dispatch(clearExperience());
+    reset();
+    setEditIndex(null);
+    setCurrentlyWorking(false);
+  };
 
   return (
-    <div className=" h-full w-full flex md:ml-[216px] items-center justify-center">
-      <span
-        className="absolute left-2 top-2 text-blue-700 underline flex items-center text-sm md:hidden hover:text-blue-500 transition duration-200"
-        onClick={() => navigate("/education")}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-4 h-4"
+    <div className="resume-page">
+      {/* Back button */}
+      <div className="mb-4 fixed z-50">
+        <button
+          onClick={() => navigate("/education")}
+          className="p-2 rounded-full bg-white shadow hover:bg-blue-100 transition-colors"
+          aria-label="Go Back"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Back
-      </span>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col h-3/4 gap-2 md:p-10 pt-10 items-center w-full justify-center"
-      >
-        <h1 className="text-3xl font-bold max-md:text-2xl">
-          Add your recent job
-        </h1>
-        <div className="grid grid-cols-2 max-sm:grid-cols-1 max-md:p-4 gap-6 py-4 px-20 items-center h-1/2 justify-center w-full">
-          <div className="w-full h-full">
-            <label>Job Title</label>
-            <input
-              className="input2"
-              placeholder="e.g. Senior Software Developer"
-              {...register("jobTitle",{required:true})}
-            />
-            {errors.jobTitle && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
+          <ArrowLeft className="w-5 h-5 text-gray-700 hover:text-blue-600" />
+        </button>
+      </div>
 
-          <div className="w-full h-full">
-            <label>Company Name</label>
-            <input
-              className="input2"
-              placeholder="e.g. Microsoft"
-              {...register("cname",{required:true})}
-            />
-            {errors.cname && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
-
-          <div className="w-full h-full">
-            <label>Work Link (optional)</label>
-            <input
-              className="input2"
-              placeholder="e.g. Project link (if available)"
-              {...register("worklink",{required:false})}
-            />
-            {errors.worklink && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
-
-          <div className="w-full h-full">
-            <label>Company Location</label>
-            <input
-              className="input2"
-              placeholder="e.g. New Delhi, India"
-              {...register("clocation")}
-            />
-            {errors.clocation && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-4 max-sm:grid-cols-2 max-md:p-4 gap-6 px-20 pb-4 items-center justify-center w-full">
-          <div className="w-full h-full flex flex-col gap-2">
-            <label>Start Date</label>
-            <select className="input2" {...register("smonth")}>
-              {months.map((item) => {
-                return (
-                  <option key={item} value={`${item}`}>
-                    {item}
-                  </option>
-                );
-              })}
-            </select>
-            <select className="input2" {...register("syear")}>
-              {years.map((item) => {
-                return (
-                  <option key={item} value={`${item}`}>
-                    {item}
-                  </option>
-                );
-              })}
-            </select>
-
-            <div className="w-full flex h-full gap-2 mt-6">
+      <div className="w-full h-full flex flex-col items-center justify-start px-4 py-6">
+        <h1 className="form-heading px-4 max-md:text-xl mb-2">Add Your Work Experience</h1>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-md space-y-6"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label>Job Title</label>
               <input
-                type="checkbox"
-                className="min-w-5 hover:cursor-pointer"
-                onChange={(e) => setCurrentlyWorking(e.target.checked)}
+                className="input2"
+                placeholder="e.g. Senior Software Developer"
+                {...register("jobTitle", { required: true })}
               />
-              <label className="text-xl flex items-center text-nowrap">
-                I currently work here
-              </label>
+              {errors.jobTitle && (
+                <p className="text-red-500 text-sm">Required</p>
+              )}
+            </div>
+
+            <div>
+              <label>Company Name</label>
+              <input
+                className="input2"
+                placeholder="e.g. Microsoft"
+                {...register("cname", { required: true })}
+              />
+              {errors.cname && <p className="text-red-500 text-sm">Required</p>}
+            </div>
+
+            <div>
+              <label>Work Link (optional)</label>
+              <input
+                className="input2"
+                placeholder="e.g. https://..."
+                {...register("worklink")}
+              />
+            </div>
+
+            <div>
+              <label>Company Location</label>
+              <input
+                className="input2"
+                placeholder="e.g. New Delhi, India"
+                {...register("clocation")}
+              />
             </div>
           </div>
 
-          <div className="w-full h-full flex flex-col gap-2">
-            <label>End Date</label>
-            <select className="input2" {...register("emonth")} disabled={currentlyWorking}>
-              {months.map((item) => {
-                return (
-                  <option key={item} value={`${item}`}>
-                    {item}
-                  </option>
-                );
-              })}
-            </select>
-            <select className="input2" {...register("eyear")} disabled={currentlyWorking}>
-              {years.map((item) => {
-                return (
-                  <option key={item} value={`${item}`}>
-                    {item}
-                  </option>
-                );
-              })}
-            </select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label>Start Date</label>
+              <div className="flex gap-2">
+                <select className="input2 w-1/2" {...register("smonth",{required:true})}>
+                <option value="">Select Month</option>
+                  {months.map((m) => (
+                    <option key={m}>{m}</option>
+                  ))}
+                </select>
+                <select className="input2 w-1/2" {...register("syear",{required:true})}>
+                <option value="">Select Year</option>
+                  {years.map((y) => (
+                    <option key={y}>{y}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mt-2 flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4"
+                  checked={currentlyWorking}
+                  onChange={(e) => setCurrentlyWorking(e.target.checked)}
+                />
+                <label className="text-sm">I currently work here</label>
+              </div>
+            </div>
+
+            <div>
+              <label>End Date</label>
+              <div className="flex gap-2">
+                <select
+                  className="input2 w-1/2"
+                  {...register("emonth")}
+                  disabled={currentlyWorking}
+                >
+                  {months.map((m) => (
+                    <option key={m}>{m}</option>
+                  ))}
+                </select>
+                <select
+                  className="input2 w-1/2"
+                  {...register("eyear")}
+                  disabled={currentlyWorking}
+                >
+                  {years.map((y) => (
+                    <option key={y}>{y}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
-        {isSubmitting && <div>Loading...</div>}
-        
-        <div className="items-center justify-center flex gap-2 flex-wrap">
-        <button
-              type="button"
-              onClick={() => handleClear()}
-              className="text-white bg-red-600 hover:bg-red-500  focus:ring-4 focus:outline-none focus:ring-red-500 dark:focus:ring-red-500 font-medium rounded-lg px-4 py-2 max-w-32"
-            >
+
+          <div className="flex justify-center gap-3 pt-2 flex-wrap">
+            <button type="submit" className="btn-primary">
+              {editIndex !== null ? "Update Experience" : "Add Experience"}
+            </button>
+            <button type="button" onClick={handleClear} className="btn-danger">
               Clear All
             </button>
-        <button className="text-white bg-gradient-to-br from-blue-500 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none hover:cursor-pointer focus:ring-pink-200 dark:focus:ring-blue-800 rounded-lg px-8 py-2" 
-        onClick={handleSubmit(onSubmit)}>
-          Add Experience
-        </button>
-        <button
-        onClick={() => navigate("/projects")}
-          className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none hover:cursor-pointer focus:ring-pink-200 dark:focus:ring-pink-800 rounded-lg px-8 py-2"
-        >Save and Continue</button>
-        </div>
-        <div className="flex flex-col gap-2 py-2 md:px-20 max-md:p-2 w-full items-center justify-center">
-          {exp.length > 0 ? (
-            exp.map((exp, index) => (
+            <button onClick={() => navigate("/projects")} className="btn-save">
+              Save & Continue
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-6 w-full max-w-4xl">
+          {expList.length > 0 ? (
+            expList.map((exp, index) => (
               <div
                 key={index}
-                className="p-5 border rounded-md shadow-md w-full"
+                className="flex justify-between items-start border p-4 rounded-lg shadow mb-4"
               >
-                <div className="justify-between flex">
-                  <h1 className="text-xl font-bold"><a target="_blank" href={exp.worklink}>{exp.jobTitle}, {exp.cname}</a></h1>
-                  <span>{exp.smonth+" "+exp.syear} - {exp.Working ? (<span>Present</span>)
-                  : <span>{exp.emonth+" "+exp.eyear}</span>}</span>
+                <div className="space-y-1">
+                  <a
+                    href={exp.worklink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-lg font-semibold text-blue-600"
+                  >
+                    {exp.jobTitle}, {exp.cname}
+                  </a>
+                  <p className="text-sm text-gray-600">{exp.clocation}</p>
+                  <p className="text-sm">
+                    {exp.smonth} {exp.syear} –{" "}
+                    {exp.Working ? "Present" : `${exp.emonth} ${exp.eyear}`}
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => handleEdit(index)}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    <Edit className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(index)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
             ))
-          ):(
-            <span>No work experience added yet.. Click on add experience button</span>
+          ) : (
+            <p className="text-gray-500 text-center mt-4">
+              No work experience added yet. Use the form above to add.
+            </p>
           )}
         </div>
-      </form>
+      </div>
     </div>
   );
 };

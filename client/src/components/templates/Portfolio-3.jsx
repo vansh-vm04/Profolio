@@ -1,61 +1,80 @@
-import React from "react";
-import { FaMapMarkerAlt, FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
-import {useLocation} from "react-router-dom"
+import React, { useRef } from "react";
+import { FaMapMarkerAlt, FaDownload, FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
+import { useReactToPrint } from "react-to-print";
 
-const ColorfulPortfolio = ({resume}) => {
-  const location = useLocation();
-  const heading = typeof resume.heading === 'string' ? JSON.parse(resume.heading) : resume.heading;
-  const education = typeof resume.education === 'string' ? JSON.parse(resume.education) : resume.education;
-  const experience = typeof resume.experience === 'string' ? JSON.parse(resume.experience) : resume.experience;
-  const projects = typeof resume.projects === 'string' ? JSON.parse(resume.projects) : resume.projects;
-  const skills = typeof resume.skills === 'string' ? JSON.parse(resume.skills) : resume.skills;
+const Template3 = ({ resume }) => {
+  const heading = typeof resume.heading === "string" ? JSON.parse(resume.heading) : resume.heading;
+  const education = typeof resume.education === "string" ? JSON.parse(resume.education) : resume.education;
+  const experience = typeof resume.experience === "string" ? JSON.parse(resume.experience) : resume.experience;
+  const projects = typeof resume.projects === "string" ? JSON.parse(resume.projects) : resume.projects;
+  const skills = typeof resume.skills === "string" ? JSON.parse(resume.skills) : resume.skills;
+
+  const downloadRef = useRef();
+  const handlePrint = useReactToPrint({ contentRef:downloadRef});
 
   return (
-    <div className={`bg-gradient-to-tr ${location.pathname.endsWith('preview') && 'md:ml-[216px]'} w-full from-indigo-100 via-purple-50 to-white min-h-screen px-6 py-12 md:px-64 font-[Raleway] text-gray-800`}>
-      {/* Header */}
-      <div className="max-w-6xl mx-auto text-center mb-12">
-        <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-          <div className="flex-1">
-            {(heading.firstname || heading.surname) && (
-              <h1 className="text-4xl md:text-5xl font-extrabold text-purple-700 transition-transform hover:scale-105">
-                {heading.firstname} {heading.surname}
-              </h1>
-            )}
-            {heading.about && <p className="mt-2 text-lg text-gray-600 italic transition-opacity hover:opacity-90">{heading.about}</p>}
-            <div className="mt-4 text-sm text-gray-700 space-y-1">
+    <div ref={downloadRef} className=" w-full min-h-screen bg-white text-gray-800 px-10 py-14 font-serif">
+      <button
+        onClick={handlePrint}
+        className="no-print fixed bottom-6 right-6 flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-5 py-3 rounded-full shadow-md font-semibold"
+      >
+        <FaDownload />
+        <span>Save PDF</span>
+      </button>
+
+      <header className="max-w-5xl mx-auto mb-16 border-b-4 border-teal-600 pb-6">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-8">
+          <div>
+            <h1 className="text-5xl font-bold tracking-tight">{heading.firstname} {heading.surname}</h1>
+            {heading.about && <p className="italic text-gray-600 mt-3">{heading.about}</p>}
+
+            <div className="mt-4 space-y-1 text-sm text-gray-700">
               {heading.email && <p>{heading.email}</p>}
               {heading.phone && <p>{heading.phone}</p>}
               {heading.location && (
-                <p className="flex items-center gap-2"><FaMapMarkerAlt className="text-purple-700" />{heading.location}</p>
+                <p className="flex items-center gap-2 text-gray-600">
+                  <FaMapMarkerAlt className="text-teal-600" /> {heading.location}
+                </p>
               )}
-              <div className="flex justify-center md:justify-start gap-4 mt-2 text-indigo-600 text-lg">
-                {heading.linkedin && <a href={heading.linkedin} target="_blank" className="hover:text-purple-600" aria-label="LinkedIn"><FaLinkedin /></a>}
-                {heading.github && <a href={heading.github} target="_blank" className="hover:text-purple-600" aria-label="GitHub"><FaGithub /></a>}
-                {heading.twitter && <a href={heading.twitter} target="_blank" className="hover:text-purple-600" aria-label="Twitter"><FaTwitter /></a>}
-              </div>
+            </div>
+
+            <div className="flex gap-6 mt-5 text-teal-600 text-2xl">
+              {heading.linkedin && (
+                <a href={heading.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                  <FaLinkedin />
+                </a>
+              )}
+              {heading.github && (
+                <a href={heading.github} target="_blank" rel="noreferrer" aria-label="GitHub">
+                  <FaGithub />
+                </a>
+              )}
+              {heading.twitter && (
+                <a href={heading.twitter} target="_blank" rel="noreferrer" aria-label="Twitter">
+                  <FaTwitter />
+                </a>
+              )}
             </div>
           </div>
 
-          {heading.imageUrl && (
-            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-purple-200 shadow-md transition-transform hover:scale-105">
-              <img
-                src={heading.imageUrl}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
+          {heading.image && (
+            <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-teal-600">
+              <img src={heading.image} alt="Profile" className="object-cover w-full h-full" />
             </div>
           )}
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-6xl mx-auto space-y-12">
-        {/* Skills */}
+      <main className="max-w-5xl mx-auto space-y-14">
         {skills?.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold text-purple-800 border-l-4 border-purple-400 pl-3 mb-3">Skills</h2>
+            <h2 className="text-2xl font-bold border-l-8 border-teal-600 pl-3 mb-6">Skills</h2>
             <div className="flex flex-wrap gap-3">
-              {skills.map((skill, index) => (
-                <span key={index} className="bg-purple-200 text-purple-800 px-3 py-1 rounded-full text-sm font-medium transition transform hover:scale-105">
+              {skills.map((skill, i) => (
+                <span
+                  key={i}
+                  className="bg-teal-100 text-teal-800 px-4 py-1 rounded-md font-medium cursor-default hover:bg-teal-200 transition"
+                >
                   {skill.label || skill}
                 </span>
               ))}
@@ -63,68 +82,96 @@ const ColorfulPortfolio = ({resume}) => {
           </section>
         )}
 
-        {/* Experience */}
         {experience?.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold text-purple-800 border-l-4 border-purple-400 pl-3 mb-3">Experience</h2>
-            <div className="space-y-6">
-              {experience.map((exp, index) => (
-                <div key={index} className="bg-white shadow-md rounded-lg p-5 transition-transform hover:scale-[1.01]">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-1">
-                    <h3 className="text-lg font-semibold text-indigo-700">{exp.jobTitle}</h3>
-                    <span className="text-sm text-gray-500">
-                      {exp.smonth} {exp.syear} - {exp.Working ? 'Present' : `${exp.emonth} ${exp.eyear}`}
-                    </span>
+            <h2 className="text-2xl font-bold border-l-8 border-teal-600 pl-3 mb-8">Experience</h2>
+            <div className="space-y-7">
+              {experience.map((exp, i) => (
+                <article key={i} className="p-6 bg-teal-50 rounded-lg shadow hover:shadow-lg transition-shadow">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-xl font-semibold text-teal-700">{exp.jobTitle}</h3>
+                    <time className="text-sm text-gray-500">
+                      {exp.smonth} {exp.syear} - {exp.Working ? "Present" : `${exp.emonth} ${exp.eyear}`}
+                    </time>
                   </div>
-                  <p className="text-sm text-gray-600">{exp.cname}, {exp.clocation}</p>
-                  {exp.worklink && <a className="text-sm text-indigo-600 hover:underline" href={exp.worklink} target="_blank">{exp.worklink}</a>}
-                </div>
+                  <p className="text-gray-700">
+                    {exp.cname}, {exp.clocation}
+                  </p>
+                  {exp.worklink && (
+                    <a
+                      href={exp.worklink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-teal-600 hover:underline text-sm"
+                    >
+                      {exp.worklink}
+                    </a>
+                  )}
+                </article>
               ))}
             </div>
           </section>
         )}
 
-        {/* Projects */}
         {projects?.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold text-purple-800 border-l-4 border-purple-400 pl-3 mb-3">Projects</h2>
-            <div className="space-y-6">
-              {projects.map((proj, index) => (
-                <div key={index} className="bg-white shadow-md rounded-lg p-5 transition-transform hover:scale-[1.01]">
-                  <h3 className="text-lg font-semibold text-indigo-700">{proj.Title}</h3>
-                  <p className="text-sm text-gray-600">{proj.Details}</p>
-                  {proj.Link && <a className="text-sm text-indigo-600 hover:underline" href={proj.Link} target="_blank">{proj.Link}</a>}
+            <h2 className="text-2xl font-bold border-l-8 border-teal-600 pl-3 mb-8">Projects</h2>
+            <div className="space-y-7">
+              {projects.map((proj, i) => (
+                <article key={i} className="p-6 bg-teal-50 rounded-lg shadow hover:shadow-lg transition-shadow">
+                  <h3 className="text-xl font-semibold text-teal-700">{proj.Title}</h3>
+                  <p className="text-gray-700">{proj.Details}</p>
+                  {proj.Link && (
+                    <a
+                      href={proj.Link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-teal-600 hover:underline text-sm"
+                    >
+                      {proj.Link}
+                    </a>
+                  )}
                   {proj.Skills?.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2 text-sm text-purple-700">
-                      {proj.Skills.map((s, i) => (
-                        <span key={i} className="bg-purple-100 px-2 py-0.5 rounded-full hover:bg-purple-200">{s}</span>
+                    <div className="mt-3 flex flex-wrap gap-3 text-teal-600 text-sm">
+                      {proj.Skills.map((s, idx) => (
+                        <span key={idx} className="bg-teal-200 px-3 py-1 rounded-md cursor-default">
+                          {s}
+                        </span>
                       ))}
                     </div>
                   )}
-                </div>
+                </article>
               ))}
             </div>
           </section>
         )}
 
-        {/* Education */}
         {education?.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold text-purple-800 border-l-4 border-purple-400 pl-3 mb-3">Education</h2>
-            <div className="space-y-6">
-              {education.map((edu, index) => (
-                <div key={index} className="bg-white shadow-md rounded-lg p-5 transition-transform hover:scale-[1.01]">
-                  <h3 className="text-lg font-semibold text-indigo-700">{edu.degree} in {edu.branch}</h3>
-                  <p className="text-sm text-gray-600">{edu.cname}, {edu.clocation}</p>
-                  <p className="text-sm text-gray-500">{edu.startyear} - {edu.endyear}</p>
-                </div>
+            <h2 className="text-2xl font-bold border-l-8 border-teal-600 pl-3 mb-8">Education</h2>
+            <div className="space-y-7">
+              {education.map((edu, i) => (
+                <article
+                  key={i}
+                  className="p-6 bg-teal-50 rounded-lg shadow hover:shadow-lg transition-shadow"
+                >
+                  <h3 className="text-xl font-semibold text-teal-700">
+                    {edu.degree} in {edu.branch}
+                  </h3>
+                  <p className="text-gray-700">
+                    {edu.cname}, {edu.clocation}
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    {edu.startyear} - {edu.endyear}
+                  </p>
+                </article>
               ))}
             </div>
           </section>
         )}
-      </div>
+      </main>
     </div>
   );
 };
 
-export default ColorfulPortfolio;
+export default Template3;

@@ -1,22 +1,104 @@
-# 🧾 Resume Desk
+# 🚀 Profolio - Portfolio Builder
 
-**Resume Desk** is a full-stack resume builder web application where users can input their personal and professional details to generate clean, professional resumes using customizable EJS templates.
+A web application to create, customize, and host portfolios with custom URLs and downloadable PDFs.
 
-- Visit live - https://resume-desk.vercel.app
+**Live Site:** [https://resume-desk.vercel.app](https://resume-desk.vercel.app)  
 
-## 🚀 Features
+## ✨ Features
 
-- 🔐 User authentication (Register/Login)
-- 📄 Dynamic resume generation using EJS templates
-- 📝 User-friendly form interface to collect resume data
-- 💾 Store resume data in MongoDB
-- 📚 View previously generated resumes
-- 📤 Download resume as PDF
+- 🎨 Multiple unique portfolio templates
+- 🎨 Different Themes
+- 📄 Portfolio to pdf download
+- 🌐 Live hosting with custom username URLs
+- 🔐 User authentication with JWT
+- 🛅 Fast and secure login with google
+- 📦 Data persistence with MongoDB
 
-## 🛠️ Tech Stack
+## 📸 Screenshots
 
-- **Frontend**: React JS, Tailwind CSS
-- **Backend**: Node.js, Express.js
-- **Templating Engine**: EJS
-- **Database**: MongoDB (with Mongoose)
-- **Authentication**: JWT Auth
+### | Homepage     
+
+![Home](/client/public/images/home2.png)
+
+### | Portfolio Template
+
+![Template](/client/public/images/nightprofile.png)
+
+## 🧑‍💻 Tech Stack
+
+- **Frontend:** React.js, Tailwind CSS, Redux Toolkit, React Hook Form
+- **Backend:** Node.js, Express.js, MongoDB
+- **Auth:** JWT (JSON Web Tokens)
+- **Deployment:** Vercel (frontend), Render (backend)
+
+## 📁 Folder Structure
+
+```bash
+📦 Profolio/
+├── client/
+│   ├── public/
+│   ├── src/
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   ├── vite.config.js
+│   ├── vercel.json
+│   └── README.md
+├── server/
+│   ├── config/
+│   ├── controllers/
+│   ├── middlewares/
+│   ├── models/
+│   ├── routes/
+│   ├── uploads/
+│   ├── utils/
+│   ├── .gitignore
+│   ├── package.json
+│   ├── server.js
+├── README.md
+```
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/vansh-vm04/Profolio.git
+```
+
+### 2. Install dependencies
+
+```bash
+# Backend
+cd server
+npm install
+
+# Frontend
+cd ../client
+npm install
+```
+
+### 3. Run the project locally
+
+```bash
+# Start backend
+cd server
+node server.js
+
+# Start frontend
+cd ../client
+npm run dev
+```
+
+## 📄 License
+
+This project is licensed under the MIT License.  
+
+## 🙋‍♂️ Author
+
+**Vansh Morwani**  
+- GitHub: [@vansh-vm04](https://github.com/vansh-vm04)  
+- LinkedIn: [linkedin.com/in/vansh027](https://linkedin.com/in/vansh027)

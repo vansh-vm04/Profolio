@@ -8,6 +8,7 @@ import { setUser } from "../features/user/userSlice";
 import { googleLogout } from "@react-oauth/google";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import { ArrowLeft } from "lucide-react";
 
 const env = import.meta.env;
 
@@ -150,8 +151,17 @@ const Dashboard = () => {
 
   return (
     <div className="w-full min-h-screen bg-gray-100 p-6 flex flex-col items-center">
+      <div className="mb-4 pt-20 w-full fixed z-50 left-4">
+        <button
+          onClick={() => navigate("/")}
+          className="p-2 rounded-full bg-white shadow hover:bg-blue-100 transition-colors"
+          aria-label="Go Back"
+        >
+          <ArrowLeft className="w-5 h-5 text-gray-700 hover:text-blue-600" />
+        </button>
+      </div>
       {/* Profile Section */}
-      <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md text-center">
+      <div className="bg-white rounded-lg shadow-md mt-20 p-6 w-full max-w-md text-center">
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white text-4xl font-semibold shadow-md">
             {user.username[0]?.toUpperCase()}
@@ -165,7 +175,7 @@ const Dashboard = () => {
 
       {/* My Portfolio Section */}
       <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-[644px] mt-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">My Portfolios</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-4">My Portfolios ({user.resumes.length})</h2>
         <div className="space-y-4">
           {user.resumes.length > 0 ? (
             user.resumes.map((hash, index) => {

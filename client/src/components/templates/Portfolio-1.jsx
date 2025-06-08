@@ -1,17 +1,29 @@
 import React from "react";
-import { FaMapMarkerAlt, FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
-import {useLocation} from "react-router-dom"
+import { FaMapMarkerAlt,FaDownload, FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
+import { useRef } from "react";
+import {useReactToPrint} from 'react-to-print'
 
 const ColorfulPortfolio = ({resume}) => {
-  const location = useLocation();
   const heading = typeof resume.heading === 'string' ? JSON.parse(resume.heading) : resume.heading;
   const education = typeof resume.education === 'string' ? JSON.parse(resume.education) : resume.education;
   const experience = typeof resume.experience === 'string' ? JSON.parse(resume.experience) : resume.experience;
   const projects = typeof resume.projects === 'string' ? JSON.parse(resume.projects) : resume.projects;
   const skills = typeof resume.skills === 'string' ? JSON.parse(resume.skills) : resume.skills;
 
+  const downloadRef = useRef();
+
+  const handlePrint = useReactToPrint({contentRef:downloadRef});
+
   return (
-    <div className={`bg-gradient-to-tr ${location.pathname.endsWith('preview') && 'md:ml-[216px]'} w-full from-indigo-100 via-purple-50 to-white min-h-screen px-6 py-12 md:px-64 font-[Raleway] text-gray-800`}>
+    <div ref={downloadRef} className={`w-full relative`}>
+      <button
+        onClick={handlePrint}
+        className="no-print gap-2 items-center flex fixed bottom-4 text-xs right-4 z-50 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded shadow-lg transition"
+      >
+        <FaDownload /><span>Save PDF</span>
+      </button>
+
+    <div className={`bg-gradient-to-tr w-full from-indigo-100 via-purple-50 to-white min-h-screen px-6 py-12 md:px-64 font-[Raleway] text-gray-800`}>
       {/* Header */}
       <div className="max-w-6xl mx-auto text-center mb-12">
         <div className="flex flex-col md:flex-row items-center justify-center gap-6">
@@ -36,10 +48,10 @@ const ColorfulPortfolio = ({resume}) => {
             </div>
           </div>
 
-          {heading.imageUrl && (
+          {heading.image && (
             <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-purple-200 shadow-md transition-transform hover:scale-105">
               <img
-                src={heading.imageUrl}
+                src={heading.image}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -123,6 +135,7 @@ const ColorfulPortfolio = ({resume}) => {
           </section>
         )}
       </div>
+    </div>
     </div>
   );
 };

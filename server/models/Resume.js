@@ -6,14 +6,14 @@ const educationSchema = new Schema({
     clocation: { type: String, required: true },
     degree: { type: String, required: true },
     branch: { type: String, required: true },
-    syear: { type: Number, required: true },
-    eyear: { type: Number, required: true },
+    syear: { type: Number, required: false },
+    eyear: { type: Number, required: false },
   });
   
   const experienceSchema = new Schema({
     jobTitle: { type: String, required: true },
     cname: { type: String, required: true },
-    clocation: { type: String, required: true },
+    clocation: { type: String, required: false },
     worklink: { type: String},
     smonth: { type: String, required: true },
     syear: { type: Number, required: true },
@@ -30,26 +30,27 @@ const educationSchema = new Schema({
   });
 
   const _persist = new Schema({
-    version:{ type: Number, required: true },
-    rehydrated: { type: Boolean, required: true }
+    version:{ type: Number, required: false },
+    rehydrated: { type: Boolean, required: false }
   })
   
   const resumeSchema = new Schema({
     heading: {
       firstname: { type: String, required: true },
-      surname: { type: String, required: false },
+      surname: { type: String, required: true },
       phone: { type: Number, required: false },
-      email: { type: String, required: false },
+      email: { type: String, required: true },
       linkedin: { type: String, required: false },
       about:{type:String},
       twitter:{type:String},
       github:{type:String},
-      location:{type:String}
+      location:{type:String},
+      image:{type:String}
     },
-    education: { type: [educationSchema], required: false },
+    education: { type: [educationSchema], required: true },
     experience: { type: [experienceSchema], required: false },
     projects: { type: [projectSchema], required: false },
-    skills: { type: [String], required: true },
+    skills: { type: [String], required: false },
     template: {type:String, required:true},
     hash: { type: String, required: true, unique: true },
     _persist:{type:_persist,required:true}

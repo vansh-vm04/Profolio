@@ -2,58 +2,19 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-white mt-1 shadow w-full">
-      <div className="w-full px-4 max-w-screen mx-auto md:py-8">
-        <div className="sm:flex max-w-screen-xl mx-auto sm:items-center sm:justify-between">
+    <footer className="bg-white border-t border-gray-200 w-full">
+      <div className="max-w-6xl mx-auto px-6 pb-10 space-y-8">
+        {/* Divider */}
+        <div className="border-t border-gray-200 pt-6 text-center text-sm text-gray-500">
+          © {new Date().getFullYear()}{" "}
           <a
-            href={`${import.meta.env.BASE_URL}`}
-            className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
+            href="/"
+            className="hover:text-indigo-700 font-semibold transition-colors"
           >
-            {/* <img src="/images/logo.svg" className="h-8" alt="Logo" /> */}
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-orange-1">
-              ResumeDesk
-            </span>
-          </a>
-          <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
-            <li>
-              <a
-                href="#"
-                className="hover:underline hover:text-black me-4 md:me-6"
-              >
-                About
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:underline hover:text-black me-4 md:me-6"
-              >
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:underline hover:text-black me-4 md:me-6"
-              >
-                Licensing
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline hover:text-black">
-                Contact
-              </a>
-            </li>
-          </ul>
+            Profolio™
+          </a>{" "}
+          • All rights reserved.
         </div>
-        <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-        <span className="block text-sm text-gray-500 sm:text-center hover:text-black dark:text-gray-400">
-          © 2024{" "}
-          <a href="/" className="hover:underline">
-            ResumeDesk™
-          </a>
-          . All Rights Reserved.
-        </span>
       </div>
     </footer>
   );

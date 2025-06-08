@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { setHeading } from "../../features/resume/resumeSlice";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { setHeading, setImageUrl } from "../../features/resume/resumeSlice";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import { ArrowLeft } from "lucide-react";
+import Loader from "../ui/Loader";
+import { confirmAlert } from "react-confirm-alert";
+const env = import.meta.env;
 
 const Heading = () => {
   const dispatch = useDispatch();
   const details = useSelector((state) => state.resume.heading);
   const navigate = useNavigate();
   const location = useLocation();
+  const [loading, setloading] = useState(false)
 
   const {
     register,
@@ -25,176 +28,227 @@ const Heading = () => {
     navigate("/education");
   };
 
+  const backToHome = async () => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="p-10 m-1 max-w-[444px] bg-slate-200 text-black shadow-md rounded-md">
+            <h1 className="m-2 text-xl max-md:text-lg font-semibold">
+              Details will be lost if you leave. Invest 5 minutes to deploy your
+              portfolio.
+            </h1>
+            <button
+              className="bg-gray-700 hover:bg-gray-400 text-white px-3 py-1 m-2 rounded-md"
+              onClick={() => onClose()}
+            >
+              Stay
+            </button>
+            <button
+              className="bg-red-600 hover:bg-red-400 m-2 rounded-md text-white py-1 px-3"
+              onClick={() => {
+                navigate("/");
+                onClose();
+              }}
+            >
+              Leave
+            </button>
+          </div>
+        );
+      },
+    });
+  };
+
+  const deleteImage = async (e) => {
+    e.preventDefault();
+    dispatch(setImageUrl(""));
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    console.log(file);
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      setloading(true)
+      const response = await fetch(
+        `${env.VITE_SERVER_URL}/api/cloudinary/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      if (!response.ok) throw new Error("Upload failed, choose another image");
+      const { url } = await response.json();
+      dispatch(setImageUrl(url));
+      toast.success("Uploaded Successfully!");
+      setloading(false)
+    } catch (error) {
+      toast.error("Upload failed, choose another image");
+      setloading(false)
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    // console.log("Updated Details:", details);
-    if(location.state?.toastMessage){
+    if (location.state?.toastMessage) {
       toast.info(location.state.toastMessage);
-      //clear toast message
       location.state.toastMessage = null;
     }
     if (details) {
-      Object.keys(details).map((item) => {
+      Object.keys(details).forEach((item) => {
         setValue(item, details[item]);
       });
     }
-  }, [details,setValue,location]);
+  }, [details, setValue, location]);
 
   return (
-    <div className=" h-full w-full flex md:ml-[216px] items-center justify-center">
+    <div className="min-h-screen w-full flex flex-col md:ml-[216px] px-4 py-6 sm:px-6 lg:px-8 ">
+      {/* Back button */}
+      <div className="mb-4 fixed z-50">
+        <button
+          onClick={() => backToHome()}
+          className="p-2 rounded-full bg-white shadow hover:bg-blue-100 transition-colors"
+          aria-label="Go Back"
+        >
+          <ArrowLeft className="w-5 h-5 text-gray-700 hover:text-blue-600" />
+        </button>
+      </div>
+
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col h-3/4 gap-2 md:p-10 pt-10 items-center w-full justify-center"
+        className="flex flex-col items-center w-full"
       >
-        <h1 className="text-3xl max-md:text-2xl font-bold">
-          Add your contact details
+        <h1 className="text-3xl mb-2 max-md:text-xl font-semibold text-gray-800">
+          Add Your Details
         </h1>
-        <div className="grid grid-cols-2 max-sm:grid-cols-1 max-md:p-10 gap-4 p-10 items-center h-1/2 justify-center w-full">
-          <div className="w-full h-full">
-            <label>First Name</label>
-            <input
-              className="input2"
-              placeholder="Example-John (required)"
-              {...register("firstname", { required: true })}
-            />
-            {errors.firstname && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-5xl bg-white p-6 sm:p-8 rounded-lg shadow-md">
+          {[
+            {
+              label: "First Name",
+              name: "firstname",
+              placeholder: "John",
+              required: true,
+            },
+            {
+              label: "Surname",
+              name: "surname",
+              placeholder: "Cena",
+              required: true,
+            },
+            {
+              label: "Phone",
+              name: "phone",
+              placeholder: "1234567890",
+              required: false,
+            },
+            {
+              label: "Email",
+              name: "email",
+              placeholder: "you@example.com",
+              required: true,
+            },
+            {
+              label: "Location",
+              name: "location",
+              placeholder: "City, State, Country",
+              required: false,
+            },
+            {
+              label: "LinkedIn",
+              name: "linkedin",
+              placeholder: "linkedin.com/in/yourname",
+              required: false,
+            },
+            {
+              label: "GitHub",
+              name: "github",
+              placeholder: "github.com/yourname",
+              required: false,
+            },
+            {
+              label: "Twitter",
+              name: "twitter",
+              placeholder: "twitter.com/yourname",
+              required: false,
+            },
+          ].map((field) => (
+            <div key={field.name} className="w-full">
+              <label className="block mb-1 font-medium text-sm text-gray-700">
+                {field.label}
+              </label>
+              <input
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                placeholder={field.placeholder}
+                {...register(field.name, {
+                  required: field.required && "This field is required",
+                  validate: field.validate,
+                })}
+              />
+              {errors[field.name] && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors[field.name].message}
+                </p>
+              )}
+            </div>
+          ))}
+          {/*Image Upload*/}
+          <label
+            htmlFor="image"
+            className="flex justify-between items-center cursor-pointer max-md:flex-col gap-4 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          >
+            <label
+              htmlFor="image"
+              className="cursor-pointer block mb-1 font-medium text-sm text-gray-700"
+            >
+              {details.image ? "Image uploaded" : "Upload your picture"}
+            </label>
+            {details.image && (
+              <button
+                onClick={(e) =>deleteImage(e)}
+                className="text-sm px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+              >
+                Remove
+              </button>
             )}
-          </div>
 
-          <div className="w-full h-full">
-            <label>Surname</label>
             <input
-              className="input2"
-              placeholder="Example-Cena (required)"
-              {...register("surname", { required: true })}
+              id="image"
+              onChange={handleImageUpload}
+              className="hidden"
+              accept="image/*"
+              type="file"
             />
-            {errors.surname && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
+          </label>
 
-
-          <div className="w-full h-full">
-            <label>Phone</label>
-            <input
-              className="input2"
-              placeholder="Example-1234567890 (required)"
-              {...register("phone", {
-                required: "This field is required",
-                validate: {
-                  isNumber: (value) =>
-                    /^[0-9]+$/.test(value) ||
-                    "Phone number must be a numeric value",
-                },
-              })}
-            />
-            {errors.phone && (
-              <span className="text-red-500 text-xs">
-                {errors.phone.message}
-              </span>
-            )}
-          </div>
-
-          <div className="w-full h-full">
-            <label>Email</label>
-            <input
-              className="input2"
-              placeholder="Example-xyz@gmail.com (required)"
-              {...register("email", { required: true })}
-            />
-            {errors.email && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
-
-          <div className="w-full h-full">
-            <label>Location</label>
-            <input
-              className="input2"
-              placeholder="Your location (city, state, country)"
-              {...register("location", { required: true })}
-            />
-            {errors.location && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
-
-         
-
-          <div className="w-full h-full">
-            <label>LinkedIn</label>
-            <input
-              className="input2"
-              placeholder="Example-linkedin.com/johncena (optional)"
-              {...register("linkedin", { required: false })}
-            />
-            {errors.linkedin && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
-
-          <div className="w-full h-full">
-            <label>Github</label>
-            <input
-              className="input2"
-              placeholder="Your github link (optional)"
-              {...register("github", { required: false })}
-            />
-            {errors.github && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
-
-          <div className="w-full h-full">
-            <label>Twitter</label>
-            <input
-              className="input2"
-              placeholder="Your twitter link (optional)"
-              {...register("twitter", { required: false })}
-            />
-            {errors.twitter && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
-
-           <div className="w-full h-full">
-            <label>About Section</label>
+          {/* About Section */}
+          <div className="sm:col-span-2">
+            <label className="block mb-1 font-medium text-sm text-gray-700">
+              About Section
+            </label>
             <textarea
-              className="input2 min-h-36 max-h-64"
-              placeholder="Write something about yourself. This will appear in about section."
-              {...register("about", { required: true })}
+              className="w-full px-4 py-2 min-h-28 border border-gray-300 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              placeholder="Write a short bio about yourself..."
+              {...register("about", { required: "This field is required" })}
             />
             {errors.about && (
-              <span className="text-red-500 text-xs">
-                This field is required
-              </span>
+              <p className="text-xs text-red-500 mt-1">
+                {errors.about.message}
+              </p>
             )}
           </div>
-
-          
         </div>
-        {isSubmitting && <div>Loading...</div>}
-        <button
-          type="submit"
-          className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none hover:cursor-pointer focus:ring-pink-200 dark:focus:ring-pink-800 rounded-lg px-8 py-2"
-        >
+
+        {isSubmitting && (
+          <div className="mt-4 text-blue-500 font-semibold">Saving...</div>
+        )}
+
+        <button type="submit" className="btn-save mt-4">
           Save and Continue
         </button>
       </form>
+      {loading && <Loader/>}
     </div>
   );
 };

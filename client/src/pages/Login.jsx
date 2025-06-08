@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -22,6 +21,7 @@ const Login = () => {
   const verifyLogin = async () => {
     const { loggedIn } = await isLoggedIn();
     if (loggedIn) {
+      toast.success("Login Successful!")
       navigate("/");
     }
   };
@@ -34,7 +34,6 @@ const Login = () => {
 
   const LoginWithGoogle = async (details) => {
     const data = jwtDecode(details.credential);
-    // console.log(data);
     const response = await fetch(`${env.VITE_SERVER_URL}/user/login/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -50,15 +49,14 @@ const Login = () => {
           username: userData.username,
           email: userData.email,
           token: userData.token,
-          loggedIn: true, // Set the logged-in status to true
+          loggedIn: true,
           resumes: userData.resumes,
         })
       );
-      console.log(userData);
-
       if (localStorage.getItem("token")) {
         const auth = await isLoggedIn();
         if (auth.loggedIn) {
+          toast.success("Login Successful!")
           navigate("/");
         }
       }
@@ -66,15 +64,13 @@ const Login = () => {
   };
 
   const onSubmit = async (data) => {
-    // console.log(data);
     const response = await fetch(`${env.VITE_SERVER_URL}/user/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     if (response.status == 404) toast.error(`Account not found, try sign up`);
-    if (response.status == 401) toast.error(`Wrong password, try again`);
-    // console.log(response);
+    if (response.status == 401) toast.error(`Wrong password, try again or login with google`);
     const userData = await response.json();
     if (userData) {
       const token = userData.token;
@@ -85,15 +81,14 @@ const Login = () => {
           username: userData.username,
           email: userData.email,
           token: userData.token,
-          loggedIn: true, // Set the logged-in status to true
+          loggedIn: true,
           resumes: userData.resumes,
         })
       );
-      // console.log(userData);
-
       if (token) {
         const auth = await isLoggedIn();
         if (auth.loggedIn) {
+          toast.success("Login Successful!")
           navigate("/");
         }
       }
@@ -101,68 +96,77 @@ const Login = () => {
   };
 
   return (
-    <div className=" h-screen flex flex-col top-0 gap-6 items-center w-full justify-center">
-      <p className="text-2xl font-semibold">Welcome back! Please sign in.</p>
-      <div className="flex gap-6 flex-col items-center justify-center">
-        {isSubmitting && <div>Loading...</div>}
-        <form
-          className="flex gap-4 items-center flex-col justify-center"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <input
-            className="input"
-            placeholder="Email"
-            {...register("email", {
-              required: { value: true, message: "this value is required" },
-              minLength: { value: 11, message: "enter valid email" },
-            })}
-            type="text"
-          />
-          {errors.email && (
-            <span className="text-red-600">*{errors.email.message}</span>
-          )}
-          <div className="flex gap-1 max-w-fit">
+    <div id="login" className="min-h-screen w-full bg-gradient-to-br from-indigo-100 via-purple-200 to-pink-100 flex-col flex items-center justify-center px-4">
+      <div  className="w-full max-w-md flex-col flex items-center bg-white shadow-lg rounded-xl p-8 space-y-6">
+        <h2 className="text-2xl font-semibold text-gray-800 text-center">
+          Welcome back! Please sign in
+        </h2>
+
+        {isSubmitting && (
+          <div className="text-sm text-gray-500 text-center">Signing you in...</div>
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div>
             <input
-              className="input"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:outline-none"
+              placeholder="Email"
+              {...register("email", {
+                required: { value: true, message: "This field is required" },
+                minLength: { value: 11, message: "Enter a valid email" },
+              })}
+              type="text"
+            />
+            {errors.email && (
+              <p className="text-sm text-red-600 mt-1">*{errors.email.message}</p>
+            )}
+          </div>
+
+          <div className="relative">
+            <input
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:outline-none"
               placeholder="Password"
               {...register("password", {
-                required: { value: true, message: "this field is required" },
+                required: { value: true, message: "This field is required" },
               })}
               type={showPassword ? "text" : "password"}
             />
-            {errors.password && (
-              <span className="text-red-600">*{errors.password.message}</span>
-            )}
             <button
               type="button"
-              className="text-sm text-gray-600"
               onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-2 text-sm text-gray-500 hover:text-black"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
+            {errors.password && (
+              <p className="text-sm text-red-600 mt-1">*{errors.password.message}</p>
+            )}
           </div>
+
           <input
-            className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg px-4 py-1"
-            disabled={isSubmitting}
             type="submit"
             value="Log In"
+            disabled={isSubmitting}
+            className="w-full bg-black cursor-pointer text-white py-2 rounded-md hover:bg-gray-900 transition-all"
           />
-          {errors.custom && (
-            <span className="text-red-600">*{errors.custom.message}</span>
-          )}
         </form>
-        <GoogleLogin
-            onSuccess={(credentialResponse) =>
-              LoginWithGoogle(credentialResponse)
-            }
-            onError={() => {
-              console.log("Login Failed");
-            }}
+
+        <div className="text-center text-gray-500 text-sm">or</div>
+
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={(credentialResponse) => LoginWithGoogle(credentialResponse)}
+            onError={() => console.log("Login Failed")}
             useOneTap
+            width="100%"
+            theme="filled_black"
+            size="large"
           />
-        <p>
+        </div>
+
+        <p className="text-center text-sm text-gray-600">
           Need an account?{" "}
-          <a className="text-blue-500" href="/signup">
+          <a href="/signup" className="text-black font-medium underline">
             Sign up for free
           </a>
         </p>

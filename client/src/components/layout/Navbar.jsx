@@ -1,17 +1,18 @@
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { resetResume } from "../../features/resume/resumeSlice";
 import isLoggedIn from "../../utils/authUtils";
+import { ArrowRight } from "lucide-react";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const location = useLocation();
   const [loggedIn, setloggedIn] = useState(false);
+
   useEffect(() => {
     const verifyLogin = async () => {
       const { loggedIn } = await isLoggedIn();
-      //console.log(loggedIn);
       setloggedIn(loggedIn);
     };
     verifyLogin();
@@ -20,45 +21,60 @@ const Navbar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const buildResume = () => {
-    dispatch(resetResume());
-    navigate("/heading");
+    if(loggedIn){
+      dispatch(resetResume());
+      navigate("/heading");
+    }else{
+      toast.info("Please Login First");
+      navigate('/login')
+    }
   };
+
   return (
-    <nav className="border-b-2 shadow-sm flex justify-between bg-white items-center w-full px-6 md:py-4 z-10 top-0 sticky">
-      <div onClick={() => navigate("/")}>
-        <h1 className="text-3xl hover:cursor-pointer font-bold text-orange-1">
-          ResumeDesk
-        </h1>
-      </div>
-      <div className="flex gap-8 items-center">
-        <div className="flex max-md:flex-wrap gap-2 items-center">
+    <nav className="fixed top-0 z-50 w-full backdrop-blur-[8px] bg-white/20 shadow-md">
+      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        {/* Logo */}
+        <div
+          className="flex items-center gap-4 hover:cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <img
+            src="/icons/icon.png"
+            alt="logo"
+            className="w-12 h-12 rounded-lg shadow object-contain"
+          />
+          <h1 className="text-3xl font-semibold tracking-tight text-gray-900 font-[Inter]">
+            Profolio
+          </h1>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex items-center gap-4">
           {loggedIn ? (
             <button
               onClick={() => navigate("/dashboard")}
-              type="button"
-              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg max-md:px-1 px-4 py-1"
+              className="nav-btn"
             >
-              My Dashboard
+              Dashboard
             </button>
           ) : (
-            !pathname.endsWith("signup") && (
+            !pathname.endsWith("login") && (
               <button
-                onClick={() => navigate("/signup")}
-                type="button"
-                className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg px-4 py-1"
+                onClick={() => navigate("/login")}
+                className="nav-btn"
               >
-                Sign Up
+                Log In
               </button>
             )
           )}
 
           <button
-            onClick={() => buildResume()}
-            type="button"
-            className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 rounded-lg px-4 max-md:hidden py-1"
+            onClick={buildResume}
+            className="hidden sm:inline-flex items-center gap-2 px-5 py-2 text-base font-semibold bg-gray-900  text-white rounded-lg  hover:bg-gray-800 transition-all shadow-sm"
           >
-            Build My Resume
+            Build Your Portfolio <ArrowRight className="h-5 w-5" />
           </button>
         </div>
       </div>

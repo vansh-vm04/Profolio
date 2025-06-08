@@ -1,78 +1,107 @@
-import { createSlice } from '@reduxjs/toolkit' 
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  heading:{},
-  education:[],
-  experience:[],
-  projects:[],
-  skills:[],
-  template:"p1"
-}
+  heading: {},
+  education: [],
+  experience: [],
+  projects: [],
+  skills: [],
+  template: "p1",
+};
 
 export const resumeSlice = createSlice({
-  name: 'resume',
+  name: "resume",
   initialState,
   reducers: {
-    setHeading: (state,action) => {
+    setHeading: (state, action) => {
       state.heading = {
         ...state.heading,
-        ...action.payload
-      }
+        ...action.payload,
+      };
     },
-    setEducation: (state,action) => {
-      state.education = [
-        ...state.education,
-        {...action.payload}
-      ]
+    setImageUrl:(state,action)=>{
+      state.heading.image = action.payload;
     },
+    setEducation: (state, action) => {
+      state.education = [...state.education, { ...action.payload }];
+    },
+    removeEducation: (state, action) => {
+      state.education = state.education.filter(
+        (_, index) => index !== action.payload
+      );
+    },
+
     clearEducation: (state) => {
-      state.education = []
+      state.education = [];
     },
-    setExperience: (state,action) => {
-      state.experience = [
-        ...state.experience,
-        {...action.payload}
-      ]
+    setExperience: (state, action) => {
+      state.experience = [...state.experience, { ...action.payload }];
     },
     clearExperience: (state) => {
-      state.experience = []
+      state.experience = [];
     },
-    setProjects: (state,action) => {
-      state.projects = [
-        ...state.projects,
-        {...action.payload}
-      ]
+    removeExperience: (state, action) => {
+      state.experience = state.experience.filter(
+        (_, index) => index !== action.payload
+      );
+    },
+    setProjects: (state, action) => {
+      state.projects = [...state.projects, { ...action.payload }];
+    },
+    removeProjects: (state, action) => {
+      state.projects = state.projects.filter(
+        (_, index) => index !== action.payload
+      );
     },
     clearProjects: (state) => {
-      state.projects = []
+      state.projects = [];
     },
     setSkills: (state, action) => {
       state.skills = [...action.payload];
     },
     clearSkills: (state) => {
-      state.skills = []
+      state.skills = [];
     },
-    setAdditionalSections: (state,action) => {
+    setAdditionalSections: (state, action) => {
       // console.log('Payload:', action.payload);
       state.additionalSections = {
         ...state.additionalSections,
-        ...action.payload
-      }
+        ...action.payload,
+      };
     },
     clearPersist: (state) => {
-        delete state._persist;
-      },
-    setTemplate:(state,action)=>{
-      state.template = action.payload
+      delete state._persist;
+    },
+    setTemplate: (state, action) => {
+      state.template = action.payload;
     },
     resetResume: () => initialState,
     addResume: (state, action) => {
       return { ...action.payload }; // Replace the entire state with the payload
     },
   },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const {resetResume,addResume, setHeading,clearPersist, setTemplate, setEducation,clearExperience,clearProjects,clearSkills, setExperience, setProjects, setSkills, setAdditionalSections, clearEducation } = resumeSlice.actions
+export const {
+  resetResume,
+  addResume,
+  setHeading,
+  clearPersist,
+  setTemplate,
+  setEducation,
+  clearExperience,
+  clearProjects,
+  clearSkills,
+  setExperience,
+  setProjects,
+  setSkills,
+  setAdditionalSections,
+  clearEducation,
+  removeEducation,
+  removeExperience,
+  removeProjects,
+  setImageUrl
+} = resumeSlice.actions;
 
-export default resumeSlice.reducer
+export default resumeSlice.reducer;

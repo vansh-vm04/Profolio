@@ -2,9 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-.animate_rubberband{
+.animate_rubberband:hover{
+  display:block;
   animation: 1s ease 0s 1 normal none running rubberband;
 }
+
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-slide {
+  animation: fadeSlide 1s ease-out forwards;
+}
+
 
 @keyframes rubberband {
   0% {
@@ -30,10 +47,85 @@
   }
 }
 
+*{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family: 'Inter';
+  background-color: rgb(249 250 251);
+}
+
+@keyframes ping-once {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-ping-once {
+  animation: ping-once 0.6s ease-out;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  .form-heading{
+    @apply text-3xl font-semibold text-gray-800;
+  }
+  .nav-btn{
+    @apply px-5 py-2 text-base font-semibold bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all shadow-sm;
+  }
+  .form-box{
+    @apply bg-white p-6 rounded-2xl shadow-md grid grid-cols-1 md:grid-cols-2 gap-6;
+  }
+  .resume-page{
+    @apply min-h-screen w-full md:ml-[216px] p-6 md:p-10 ;
+  }
+
+  .input2 {
+    @apply w-full px-3 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400;
+  }
+  .btn-save {
+    @apply text-white max-w-fit text-sm sm:text-base font-semibold bg-gray-950 hover:bg-gray-700 transition-all duration-300 px-8 py-2 rounded-lg shadow-lg;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition;
+  }
+
+  .btn-danger {
+    @apply bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition;
+  }
+
+  .btn-accent {
+    @apply bg-gradient-to-br from-pink-500 to-orange-400 text-white px-4 py-2 rounded-md hover:from-orange-400 hover:to-pink-500 transition;
+  }
+
+  .btn-edit {
+    @apply text-sm bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600;
+  }
+
+  .btn-delete {
+    @apply text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600;
+  }
+
   .flex-between {
     @apply flex justify-between items-center;
   }

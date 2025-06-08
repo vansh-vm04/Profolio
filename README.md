@@ -2,7 +2,7 @@
 
 A web application to create, customize, and host portfolios with custom URLs and downloadable PDFs.
 
-**Live Site:** [https://resume-desk.vercel.app](https://resume-desk.vercel.app)  
+**Live Site:** [https://profolio-app.vercel.app](https://profolio-app.vercel.app)  
 
 ## ✨ Features
 

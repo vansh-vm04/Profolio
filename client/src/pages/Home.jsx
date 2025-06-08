@@ -199,7 +199,7 @@ const Home = () => {
           <h2 className="text-4xl md:text-5xl font-extrabold leading-tight text-indigo-700 drop-shadow-sm">
             🚀 Real-time Portfolio Hosting with Custom URLs
           </h2>
-          <p className="text-gray-700 text-lg max-md:text-base md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-700 text-lg max-md:text-sm md:text-xl max-w-2xl mx-auto leading-relaxed">
             Host your portfolio at{" "}
             <code className="bg-indigo-100 text-nowrap px-3 py-1.5 rounded-md font-mono text-indigo-700 shadow-sm">
               {env.VITE_BASE_URL}/yourname

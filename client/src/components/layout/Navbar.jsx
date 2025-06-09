@@ -16,7 +16,7 @@ const Navbar = () => {
       setloggedIn(loggedIn);
     };
     verifyLogin();
-  }, [location]);
+  }, [location.pathname]);
 
   const { pathname } = useLocation();
   const navigate = useNavigate();

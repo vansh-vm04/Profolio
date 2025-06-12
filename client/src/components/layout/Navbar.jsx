@@ -9,11 +9,13 @@ import { toast } from "react-toastify";
 const Navbar = () => {
   const location = useLocation();
   const [loggedIn, setloggedIn] = useState(false);
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const verifyLogin = async () => {
       const { loggedIn } = await isLoggedIn();
       setloggedIn(loggedIn);
+      setLoading(false)
     };
     verifyLogin();
   }, [location.pathname]);
@@ -52,21 +54,23 @@ const Navbar = () => {
 
         {/* Buttons */}
         <div className="flex items-center gap-4">
-          {loggedIn ? (
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="nav-btn"
-            >
-              Dashboard
-            </button>
-          ) : (
-            !pathname.endsWith("login") && (
+          {!loading && ( 
+            loggedIn ? (
               <button
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/dashboard")}
                 className="nav-btn"
               >
-                Log In
+                Dashboard
               </button>
+            ) : (
+              !pathname.endsWith("login") && (
+                <button
+                  onClick={() => navigate("/login")}
+                  className="nav-btn"
+                >
+                  Log In
+                </button>
+              )
             )
           )}
 

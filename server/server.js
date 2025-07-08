@@ -8,15 +8,15 @@ const uploadRoutes = require('./routes/uploadRoutes')
 const cors = require('cors');
 const {dbConnect} = require('./config/db')
 
-app.use(cors());
-
 app.use(
   cors({
     origin: process.env.FRONTEND_DOMAIN,
-    methods: ["POST","GET","PUT","DELETE"],
+    methods: ["POST","GET","PUT","DELETE","OPTIONS"],
     credentials: true,
   })
 );
+
+app.options("*", cors());
 
 dbConnect();
 

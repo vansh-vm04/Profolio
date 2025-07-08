@@ -6,6 +6,7 @@ const portfolioRoutes = require('./routes/resumeRoutes')
 const bodyparser = require('body-parser')
 const uploadRoutes = require('./routes/uploadRoutes')
 const cors = require('cors');
+const {dbConnect} = require('./config/db')
 
 app.use(cors());
 
@@ -13,8 +14,11 @@ app.use(
   cors({
     origin: process.env.FRONTEND_DOMAIN,
     methods: ["POST","GET","PUT","DELETE"],
+    credentials: true,
   })
 );
+
+dbConnect();
 
 app.use(bodyparser.json());
 

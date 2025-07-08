@@ -1,14 +1,16 @@
-const mongoose = require('mongoose')
-require('dotenv').config();
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const mongoURL = process.env.DB_URL;
 
-mongoose.connect(mongoURL);
+const dbConnect = () => {
+  mongoose.connect(mongoURL);
+};
 
 const db = mongoose.connection;
 
-db.on('connected',()=>{
-    console.log('Database Connected');
-})
+db.on("connected", () => {
+  console.log("Database Connected");
+});
 
-module.exports = db;
+module.exports = { db, dbConnect };

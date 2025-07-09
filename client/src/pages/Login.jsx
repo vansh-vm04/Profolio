@@ -39,8 +39,12 @@ const Login = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
+    if(response.status == 500){
+      toast.error("Google login failed, try again!");
+      return;
+    }
     const userData = await response.json();
-    if (userData) {
+    if (userData?.token) {
       const token = userData.token;
       localStorage.setItem("token", token);
       dispatch(
@@ -157,7 +161,6 @@ const Login = () => {
           <GoogleLogin
             onSuccess={(credentialResponse) => LoginWithGoogle(credentialResponse)}
             onError={() => console.log("Login Failed")}
-            useOneTap
             width="100%"
             theme="filled_black"
             size="large"

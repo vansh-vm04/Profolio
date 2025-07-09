@@ -7,6 +7,13 @@ const bodyparser = require('body-parser')
 const uploadRoutes = require('./routes/uploadRoutes')
 const cors = require('cors');
 const {dbConnect} = require('./config/db')
+const helmet = require("helmet");
+
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+  })
+);
 
 app.use(
   cors({

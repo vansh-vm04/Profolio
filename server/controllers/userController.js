@@ -68,6 +68,7 @@ const loginUser = async (req, res) => {
 //Login with google
 const googleLogin = async (req, res) => {
   try {
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
     const data = req.body;
     const user = await User.findOne({ email: data.email });
     if (!user) {
@@ -90,14 +91,15 @@ const googleLogin = async (req, res) => {
         token: generateToken(user.id),
         resumes: user.resumes,
       });
-    }
-    return res.status(200).json({
+    }else{
+      return res.status(200).json({
       id: user.id,
       username: user.username,
       email: user.email,
       token: generateToken(user.id),
       resumes: user.resumes,
     });
+    }
   } catch (error) {
     res.status(500).json({message:"Internal server error"})
     console.log(error)

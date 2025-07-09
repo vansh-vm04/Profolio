@@ -160,7 +160,6 @@ const Signup = () => {
                   <GoogleLogin
                     onSuccess={(credentialResponse) => LoginWithGoogle(credentialResponse)}
                     onError={() => console.log("Login Failed")}
-                    useOneTap
                     width="100%"
                     theme="filled_black"
                     size="large"

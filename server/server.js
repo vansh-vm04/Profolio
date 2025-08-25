@@ -38,6 +38,9 @@ app.use('/user',userRoutes);
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+app.get('/api/health', (req, res) => {
+  res.status(200).json({message:"Server is alive"})
+})
 
 app.listen(port, () => {
   console.log(`Express connected on port ${port}`)

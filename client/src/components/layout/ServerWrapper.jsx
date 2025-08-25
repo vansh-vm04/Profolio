@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 const env = import.meta.env;
+import PropTypes from "prop-types";
+import React from "react";
 
-function ServerWrapper(children) {
+function ServerWrapper({children}) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,5 +31,9 @@ function ServerWrapper(children) {
 
   return <>{children}</>;
 }
+
+ServerWrapper.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default ServerWrapper;

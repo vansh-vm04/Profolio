@@ -20,6 +20,7 @@ import { Analytics } from '@vercel/analytics/react';
 import DeployPage from "./components/resume/Deploy";
 import Preview from "./components/resume/Preview";
 import RenderPortfolio from "./pages/RenderPortfolio";
+import ServerWrapper from "./components/layout/ServerWrapper";
 
 function App() {
   const location = useLocation();
@@ -28,7 +29,7 @@ function App() {
   const showSidebar = SidebarRoutes.includes(location.pathname);
   const showNavbar = pageRoutes.includes(location.pathname);
   return (
-    <>
+    <ServerWrapper>
       <div className="">
         {showNavbar && <Navbar />}
         <div className="flex">
@@ -53,7 +54,7 @@ function App() {
       </div>
       <ToastContainer position="top-right" autoClose={2000} />
       <Analytics/>
-    </>
+    </ServerWrapper>
   );
 }
 

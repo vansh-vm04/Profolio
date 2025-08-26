@@ -16,20 +16,30 @@ import Skills from "./components/resume/Skills";
 import Templates from "./components/resume/Templates";
 import Dashboard from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/react";
 import DeployPage from "./components/resume/Deploy";
 import Preview from "./components/resume/Preview";
 import RenderPortfolio from "./pages/RenderPortfolio";
-import ServerWrapper from "./components/layout/ServerWrapper";
+import { useServerStart } from "./hooks/useServerStart";
 
 function App() {
+  useServerStart()
   const location = useLocation();
-  const pageRoutes = ["/","/login","/signup","/dashboard"]
-  const SidebarRoutes = ["/heading", "/templates", "/deploy","/education","/experience","/skills","/projects","/preview"];
+  const pageRoutes = ["/", "/login", "/signup", "/dashboard"];
+  const SidebarRoutes = [
+    "/heading",
+    "/templates",
+    "/deploy",
+    "/education",
+    "/experience",
+    "/skills",
+    "/projects",
+    "/preview",
+  ];
   const showSidebar = SidebarRoutes.includes(location.pathname);
   const showNavbar = pageRoutes.includes(location.pathname);
   return (
-    <ServerWrapper>
+    <>
       <div className="">
         {showNavbar && <Navbar />}
         <div className="flex">
@@ -53,8 +63,8 @@ function App() {
         {showNavbar && <Footer />}
       </div>
       <ToastContainer position="top-right" autoClose={2000} />
-      <Analytics/>
-    </ServerWrapper>
+      <Analytics />
+    </>
   );
 }
 

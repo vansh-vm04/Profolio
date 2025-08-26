@@ -3,7 +3,6 @@ const app = express();
 const port = 3000
 const userRoutes = require('./routes/userRoutes')
 const portfolioRoutes = require('./routes/resumeRoutes')
-const bodyparser = require('body-parser')
 const uploadRoutes = require('./routes/uploadRoutes')
 const cors = require('cors');
 const {dbConnect} = require('./config/db')
@@ -27,7 +26,7 @@ app.options("*", cors());
 
 dbConnect();
 
-app.use(bodyparser.json());
+app.use(express.json());
 
 app.use('/api/cloudinary',uploadRoutes)
 
